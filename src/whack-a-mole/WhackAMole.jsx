@@ -102,7 +102,11 @@ export default function WhackAMole() {
 
 
             <div className={styles.targetPane}>
-                <img src={targetImage} alt="Target" className={styles.targetImage} />
+                {targetImage ? (
+                    <img src={targetImage} alt="" className={styles.targetImage} />
+                ) : (
+                    <div className={styles.targetPlaceholder}>Pick the right word!</div>
+                )}
             </div>
 
 

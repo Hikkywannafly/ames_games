@@ -1,4 +1,3 @@
-
 .gameContainer {
     width: 100%;
     max-width: 480px;
@@ -78,6 +77,17 @@
     object-fit: contain;
 }
 
+.targetPlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #334;
+    opacity: .6;
+    user-select: none;
+}
 
 /* Play area */
 .playArea {
