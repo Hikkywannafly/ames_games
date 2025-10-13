@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Whack-a-Word Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <!-- --- MODIFICATION START: Added Tone.js for sound effects --- -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <!-- --- MODIFICATION END --- -->
+    <style>
+        body {
+            font-family: 'Fredoka One', cursive;
+            touch-action: manipulation;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            background: linear-gradient(to bottom, #87CEEB 0%, #a2d2ff 50%, #5C9E31 50%, #6AAF3A 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hole {
+            position: relative;
+            width: 100px;
+            height: 50px;
+            background-color: #A0522D;
+            border-radius: 50% / 100%;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border: 5px solid #6B3E26;
+            overflow: visible;
+        }
+
+        .mole {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 80px;
+            height: 80px;
+            background-color: #C3A18F;
+            border-radius: 50%;
+            border: 5px solid #8B5E34;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .mole.up {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .mole-eyes {
+            display: flex;
+            gap: 10px;
+        }
+
+        .eye {
+            width: 10px;
+            height: 10px;
+            background-color: black;
+            border-radius: 50%;
+        }
+
+        .mole-nose {
+            width: 8px;
+            height: 8px;
+            background-color: #F08080;
+            border-radius: 50%;
+            margin-top: 5px;
+        }
+
+        .word-bubble {
+            position: absolute;
+            bottom: 85%;
+            background-color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            border: 3px solid #333;
+            font-size: 16px;
+            color: #333;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transform-origin: bottom center;
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        .mole.up .word-bubble {
+            transform: scale(1);
+            opacity: 1;
+            transition-delay: 0.1s;
+        }
+
+        .hammer {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg transform='rotate(45 50 50)'%3E%3Crect x='40' y='0' width='20' height='60' fill='%238B4513'/%3E%3Crect x='25' y='60' width='50' height='30' fill='%23D3D3D3' rx='5'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: translate(-50%, -50%) rotate(0deg);
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+            z-index: 100;
+        }
+
+        .hammer.hit {
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        .feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 80px;
+            opacity: 0;
+            transition: all 0.5s ease;
+            pointer-events: none;
+        }
+
+        .feedback.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.5);
+        }
+
+        /* --- MODIFICATION START: Added styles for point popup --- */
+        .point-popup {
+            position: absolute;
+            font-size: 28px;
+            color: #FFD700;
+            /* Gold */
+            text-shadow: 2px 2px 2px #000;
+            animation: floatUp 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 150;
+        }
+
+        @keyframes floatUp {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-60px);
+                opacity: 0;
+            }
+        }
+
+        /* --- MODIFICATION END --- */
+        .start-screen,
+        .end-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .start-button {
+            padding: 15px 30px;
+            font-size: 24px;
+            background-color: #FFC107;
+            color: #333;
+            border: 5px solid #FFA000;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 5px 0 #E69100;
+            transition: all 0.1s ease;
+        }
+
+        .start-button:active {
+            transform: translateY(5px);
+            box-shadow: 0 0 0 #E69100;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-800 flex justify-center items-center">
+
+    <div class="game-container shadow-2xl">
+        <!-- Start Screen -->
+        <div id="start-screen" class="start-screen">
+            <h1 class="text-5xl mb-4">Whack-a-Word!</h1>
+            <p class="text-xl mb-6">Hit the mole with the word that matches the picture. Be quick for more points!</p>
+            <button id="start-button" class="start-button">Start Game</button>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen" class="end-screen hidden">
+            <h1 class="text-5xl mb-4">Game Over!</h1>
+            <p class="text-3xl mb-6">Your final score is: <span id="final-score">0</span></p>
+            <button id="restart-button" class="start-button">Play Again</button>
+        </div>
+
+        <!-- Game UI -->
+        <div class="p-4 flex-shrink-0">
+            <div class="flex justify-between items-center text-white text-3xl">
+                <div>Score: <span id="score">0</span></div>
+                <div>Time: <span id="time">60</span></div>
+            </div>
+            <div class="mt-4 bg-white/50 p-4 rounded-2xl flex justify-center items-center h-40">
+                <img id="target-image" src="" alt="Target" class="max-h-full max-w-full object-contain">
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div class="flex-grow relative flex flex-col justify-around items-center p-4">
+            <div class="w-full flex justify-around">
+                <div class="hole">
+                    <div class="mole" data-id="0"></div>
+                </div>
+                <div class="hole">
+                    <div class="mole" data-id="1"></div>
+                </div>
+            </div>
+            <div class="w-full flex justify-center">
+                <div class="hole">
+                    <div class="mole" data-id="2"></div>
+                </div>
+            </div>
+            <div class="w-full flex justify-around">
+                <div class="hole">
+                    <div class="mole" data-id="3"></div>
+                </div>
+                <div class="hole">
+                    <div class="mole" data-id="4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hammer -->
+        <div id="hammer" class="hammer"></div>
+
+        <!-- Feedback -->
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <script>
+        // --- Game Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const endScreen = document.getElementById('end-screen');
+        const startButton = document.getElementById('start-button');
+        const restartButton = document.getElementById('restart-button');
+        const scoreEl = document.getElementById('score');
+        const timeEl = document.getElementById('time');
+        const finalScoreEl = document.getElementById('final-score');
+        const targetImageEl = document.getElementById('target-image');
+        const moles = document.querySelectorAll('.mole');
+        const hammer = document.getElementById('hammer');
+        const feedbackEl = document.getElementById('feedback');
+        const gameContainer = document.querySelector('.game-container');
+
+        // --- Game Data ---
+        const gameData = [
+            { word: 'Apple', image: 'https://placehold.co/100x100/FF0000/FFFFFF?text=Apple' },
+            { word: 'Banana', image: 'https://placehold.co/100x100/FFFF00/000000?text=Banana' },
+            { word: 'Carrot', image: 'https://placehold.co/100x100/FFA500/FFFFFF?text=Carrot' },
+            { word: 'Dog', image: 'https://placehold.co/100x100/A52A2A/FFFFFF?text=Dog' },
+            { word: 'Cat', image: 'https://placehold.co/100x100/808080/FFFFFF?text=Cat' },
+            { word: 'Sun', image: 'https://placehold.co/100x100/FFD700/000000?text=Sun' },
+            { word: 'Moon', image: 'https://placehold.co/100x100/F0E68C/000000?text=Moon' },
+            { word: 'Star', image: 'https://placehold.co/100x100/FFFF00/000000?text=Star' },
+            { word: 'House', image: 'https://placehold.co/100x100/DEB887/000000?text=House' },
+            { word: 'Tree', image: 'https://placehold.co/100x100/008000/FFFFFF?text=Tree' },
+            { word: 'Car', image: 'https://placehold.co/100x100/0000FF/FFFFFF?text=Car' },
+            { word: 'Ball', image: 'https://placehold.co/100x100/FF4500/FFFFFF?text=Ball' }
+        ];
+
+        // --- Game State ---
+        let score = 0;
+        let timeLeft = 60;
+        let gameTimer;
+        let roundTimer;
+        let roundStartTime;
+        let currentCorrectWord = '';
+        let isGameActive = false;
+
+        // --- MODIFICATION START: Sound Effect State ---
+        let soundsReady = false;
+        let correctSound, wrongSound;
+        // --- MODIFICATION END ---
+
+        // --- Functions ---
+
+        // --- MODIFICATION START: Initialize sound synthesizers ---
+        function initSounds() {
+            if (soundsReady || typeof Tone === 'undefined') return;
+            // Tone.start() is required to be called by a user interaction
+            Tone.start();
+            correctSound = new Tone.Synth({
+                oscillator: { type: 'triangle' },
+                envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }
+            }).toDestination();
+
+            wrongSound = new Tone.Synth({
+                oscillator: { type: 'square' },
+                envelope: { attack: 0.01, decay: 0.4, sustain: 0.1, release: 0.5 }
+            }).toDestination();
+            soundsReady = true;
+        }
+        // --- MODIFICATION END ---
+
+        function startGame() {
+            initSounds(); // Attempt to initialize sounds on game start
+            startScreen.classList.add('hidden');
+            endScreen.classList.add('hidden');
+            isGameActive = true;
+            score = 0;
+            timeLeft = 60;
+            scoreEl.textContent = score;
+            timeEl.textContent = timeLeft;
+
+            gameTimer = setInterval(updateGameTimer, 1000);
+
+            nextRound();
+        }
+
+        function endGame() {
+            isGameActive = false;
+            clearInterval(gameTimer);
+            clearTimeout(roundTimer);
+            moles.forEach(mole => mole.classList.remove('up'));
+            finalScoreEl.textContent = score;
+            endScreen.classList.remove('hidden');
+        }
+
+        function updateGameTimer() {
+            timeLeft--;
+            timeEl.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+
+        function nextRound() {
+            if (!isGameActive) return;
+
+            clearTimeout(roundTimer);
+            moles.forEach(mole => mole.classList.remove('up'));
+
+            setTimeout(() => {
+                const availableData = [...gameData];
+                const correctItemIndex = Math.floor(Math.random() * availableData.length);
+                const correctItem = availableData.splice(correctItemIndex, 1)[0];
+                currentCorrectWord = correctItem.word;
+                targetImageEl.src = correctItem.image;
+                targetImageEl.alt = correctItem.word;
+
+                const wrongWords = [];
+                while (wrongWords.length < 4) {
+                    const randomIndex = Math.floor(Math.random() * availableData.length);
+                    wrongWords.push(availableData.splice(randomIndex, 1)[0].word);
+                }
+
+                const roundWords = [correctItem.word, ...wrongWords];
+                shuffleArray(roundWords);
+
+                moles.forEach((mole, index) => {
+                    mole.innerHTML = `
+                        <div class="mole-eyes"><div class="eye"></div><div class="eye"></div></div>
+                        <div class="mole-nose"></div>
+                        <div class="word-bubble">${roundWords[index]}</div>
+                    `;
+                    mole.dataset.word = roundWords[index];
+                    mole.classList.add('up');
+                });
+
+                roundStartTime = Date.now();
+            }, 500);
+        }
+
+        function handleMoleHit(e) {
+            if (!isGameActive || !e.target.closest('.mole.up')) return;
+
+            const mole = e.target.closest('.mole');
+            const hitWord = mole.dataset.word;
+
+            hammer.classList.add('hit');
+            setTimeout(() => hammer.classList.remove('hit'), 150);
+
+            if (hitWord === currentCorrectWord) {
+                // Correct hit
+                if (soundsReady) correctSound.triggerAttackRelease('C5', '8n'); // Play correct sound
+
+                const timeTaken = (Date.now() - roundStartTime) / 1000;
+                const points = Math.max(10, 100 - Math.floor(timeTaken * 10));
+                score += points;
+                scoreEl.textContent = score;
+
+                showFeedback('⭐', 'gold');
+                createPointPopup(points, mole); // Show points visual effect
+
+                moles.forEach(m => m.classList.remove('up'));
+                nextRound();
+            } else {
+                // Wrong hit
+                if (soundsReady) wrongSound.triggerAttackRelease('A2', '8n'); // Play wrong sound
+                showFeedback('❌', 'red');
+                mole.classList.remove('up');
+            }
+        }
+
+        function showFeedback(text, color) {
+            feedbackEl.textContent = text;
+            feedbackEl.style.color = color;
+            feedbackEl.classList.add('show');
+            setTimeout(() => feedbackEl.classList.remove('show'), 500);
+        }
+
+        // --- MODIFICATION START: Function to create the floating points ---
+        function createPointPopup(points, targetElement) {
+            const popup = document.createElement('div');
+            popup.textContent = `+${points}`;
+            popup.className = 'point-popup';
+
+            const targetRect = targetElement.getBoundingClientRect();
+            const containerRect = gameContainer.getBoundingClientRect();
+
+            // Position the popup above the center of the mole
+            popup.style.left = `${targetRect.left - containerRect.left + (targetRect.width / 2) - 20}px`;
+            popup.style.top = `${targetRect.top - containerRect.top}px`;
+
+            gameContainer.appendChild(popup);
+
+            // Remove the element after the animation ends (1000ms)
+            setTimeout(() => {
+                popup.remove();
+            }, 1000);
+        }
+        // --- MODIFICATION END ---
+
+        function moveHammer(e) {
+            let x, y;
+            if (e.touches) {
+                x = e.touches[0].clientX;
+                y = e.touches[0].clientY;
+            } else {
+                x = e.clientX;
+                y = e.clientY;
+            }
+            const rect = gameContainer.getBoundingClientRect();
+            hammer.style.left = `${x - rect.left}px`;
+            hammer.style.top = `${y - rect.top}px`;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // --- Event Listeners ---
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', startGame);
+
+        gameContainer.addEventListener('click', handleMoleHit);
+
+        window.addEventListener('mousemove', moveHammer);
+        window.addEventListener('touchmove', moveHammer, { passive: true });
+        window.addEventListener('touchstart', moveHammer, { passive: true });
+
+    </script>
+</body>
+
+</html>
