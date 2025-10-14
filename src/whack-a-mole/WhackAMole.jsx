@@ -173,7 +173,7 @@ export default function WhackAMole({
             {!isGameActive && timeLeft < gameConfig.gameDuration && gameReport && (
                 <div className={styles.endScreen}>
                     <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-                        {gameReport.isCompleted ? "🎉 Hoàn thành!" : "Game Over!"}
+                        {gameReport.isCompleted ? "🎉 Completed!" : "Game Over!"}
                     </h1>
                     <div style={{ fontSize: "1.25rem", marginBottom: "1.5rem", textAlign: "center" }}>
                         {gameReport.isCompleted ? (
