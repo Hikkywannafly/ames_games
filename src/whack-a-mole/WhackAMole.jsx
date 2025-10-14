@@ -21,6 +21,7 @@ export default function WhackAMole({
         isGameActive,
         pointPopups,
         gameReport,
+        currentProgress,
         startGame,
         restartGame,
         handleMoleHit,
@@ -60,8 +61,6 @@ export default function WhackAMole({
     const MoleCell = memo(({ mole, index }) => {
         const content = mole?.content;
         const isUp = mole?.up || false;
-
-        // Handle null content (empty hole)
         if (!content) {
             return (
                 <div className={styles.hole}>
@@ -76,6 +75,7 @@ export default function WhackAMole({
                         aria-label="Empty hole"
                         onClick={(e) => {
                             console.log('Empty hole clicked', index);
+                            e.preventDefault();
                             e.stopPropagation();
                             handleMoleHit(e, moleRefs, containerRef);
                         }}
@@ -116,6 +116,7 @@ export default function WhackAMole({
                     aria-label={`Answer: ${displayText}`}
                     onClick={(e) => {
                         console.log('Mole clicked', index, displayText);
+                        e.preventDefault();
                         e.stopPropagation();
                         handleMoleHit(e, moleRefs, containerRef);
                     }}
@@ -153,6 +154,7 @@ export default function WhackAMole({
             className={styles.gameContainer}
             onClick={(e) => {
                 console.log('Container clicked');
+                e.preventDefault();
                 handleMoleHit(e, moleRefs, containerRef);
             }}
             role="main"
@@ -170,10 +172,17 @@ export default function WhackAMole({
 
             {!isGameActive && timeLeft < gameConfig.gameDuration && gameReport && (
                 <div className={styles.endScreen}>
-                    <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>Game Over!</h1>
+                    <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
+                        {gameReport.isCompleted ? "🎉 Hoàn thành!" : "Game Over!"}
+                    </h1>
                     <div style={{ fontSize: "1.25rem", marginBottom: "1.5rem", textAlign: "center" }}>
+                        {gameReport.isCompleted ? (
+                            <p style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#4CAF50" }}>
+                                Congratulations! You have completed all the questions! 🏆
+                            </p>
+                        ) : null}
                         <p style={{ fontSize: "1.875rem", marginBottom: "1rem" }}>
-                            Your final score is: <span style={{ color: "#4CAF50", fontWeight: "bold" }}>{gameReport.finalScore}</span>
+                            Final score: <span style={{ color: "#4CAF50", fontWeight: "bold" }}>{gameReport.finalScore}</span>
                         </p>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
                             <div>
@@ -193,6 +202,9 @@ export default function WhackAMole({
             <div className={styles.headerPane}>
                 <div>Score: <span>{score}</span></div>
                 <div>Time: <span>{timeLeft}</span></div>
+                {isGameActive && targetContent && (
+                    <div>Progress: <span>{currentProgress.current}/{currentProgress.total}</span></div>
+                )}
             </div>
 
             <div className={styles.targetPane}>

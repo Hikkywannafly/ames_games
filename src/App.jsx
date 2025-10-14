@@ -6,7 +6,7 @@ function App() {
   const handleGameEnd = (gameReport) => {
     console.log('Game ended!', gameReport);
     // Here you can send the report to your backend
-    alert(`Game Over! Score: ${gameReport.finalScore}, Accuracy: ${gameReport.accuracy}%`);
+    console.log(`Game Over! Score: ${gameReport.finalScore}, Accuracy: ${gameReport.accuracy}%`);
   };
 
   return (
