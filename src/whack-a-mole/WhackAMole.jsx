@@ -1,6 +1,6 @@
 import { useEffect, useRef, memo } from "react";
 import styles from "./WhackAMole.module.css";
-import useGameLogic, { DEFAULT_GAME_DATA, DEFAULT_GAME_CONFIG } from "./useGameLogic";
+import useGameLogic, { DEFAULT_GAME_CONFIG, DEFAULT_GAME_DATA } from "./useGameLogic";
 
 export default function WhackAMole({
     gameData = DEFAULT_GAME_DATA,
@@ -9,32 +9,16 @@ export default function WhackAMole({
 }) {
     const containerRef = useRef(null);
     const moleRefs = useRef([]);
-    // const rafRef = useRef(null);
 
     const {
-        score,
-        timeLeft,
-        targetContent,
-        moles,
-        hammerPos,
-        feedback,
-        isGameActive,
-        pointPopups,
-        gameReport,
-        currentProgress,
-        startGame,
-        restartGame,
-        handleMoleHit,
-        setHammerPos,
+        score, timeLeft, targetContent, moles, hammerPos, feedback,
+        isGameActive, pointPopups, gameReport, currentProgress,
+        startGame, restartGame, handleMoleHit, setHammerPos
     } = useGameLogic(gameData, gameConfig);
 
-    // Call onGameEnd callback when game ends
     useEffect(() => {
-        if (gameReport && onGameEnd) {
-            onGameEnd(gameReport);
-        }
+        if (gameReport && onGameEnd) onGameEnd(gameReport);
     }, [gameReport, onGameEnd]);
-
 
     useEffect(() => {
         const moveHammer = (e) => {
@@ -46,11 +30,9 @@ export default function WhackAMole({
             const rect = container.getBoundingClientRect();
             setHammerPos({ x: `${x - rect.left}px`, y: `${y - rect.top}px` });
         };
-
         window.addEventListener("mousemove", moveHammer, { passive: true });
         window.addEventListener("touchmove", moveHammer, { passive: true });
         window.addEventListener("touchstart", moveHammer, { passive: true });
-
         return () => {
             window.removeEventListener("mousemove", moveHammer);
             window.removeEventListener("touchmove", moveHammer);
@@ -59,48 +41,35 @@ export default function WhackAMole({
     }, [setHammerPos]);
 
     const MoleCell = memo(({ mole, index }) => {
-        const content = mole?.content;
+        const ans = mole?.content;
         const isUp = mole?.up || false;
-        if (!content) {
+
+
+        if (!ans) {
             return (
                 <div className={styles.hole}>
                     <div
                         ref={el => (moleRefs.current[index] = el)}
                         className={`${styles.mole} ${isUp ? styles.up : ""}`}
                         data-id={index}
-                        data-content=""
+                        data-content-id=""
                         data-up={isUp}
                         role="button"
                         tabIndex={isUp ? 0 : -1}
                         aria-label="Empty hole"
-                        onClick={(e) => {
-                            console.log('Empty hole clicked', index);
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleMoleHit(e, moleRefs, containerRef);
-                        }}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                handleMoleHit(e, moleRefs, containerRef);
-                            }
-                        }}
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleMoleHit(e, moleRefs, containerRef); }}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleMoleHit(e, moleRefs, containerRef); } }}
                     >
-                        <div className={styles.moleEyes}>
-                            <div className={styles.eye} />
-                            <div className={styles.eye} />
-                        </div>
+                        <div className={styles.moleEyes}><div className={styles.eye} /><div className={styles.eye} /></div>
                         <div className={styles.moleNose} />
                     </div>
                 </div>
             );
         }
 
-
-        const isObject = content && typeof content === 'object';
-        const displayText = isObject ? content.text : content;
-        const displayImage = isObject ? content.image : null;
-        const contentId = isObject ? content.id : content;
+        const displayMode = targetContent?.displayMode || "text_only";
+        const showText = displayMode === "text_only" || displayMode === "text_and_image";
+        const showImage = (displayMode === "image_only" || displayMode === "text_and_image") && !!ans.image;
 
         return (
             <div className={styles.hole}>
@@ -108,55 +77,32 @@ export default function WhackAMole({
                     ref={el => (moleRefs.current[index] = el)}
                     className={`${styles.mole} ${isUp ? styles.up : ""}`}
                     data-id={index}
-                    data-content={isObject ? JSON.stringify(content) : (content || "")}
-                    data-content-id={contentId}
+                    data-content-id={ans.id}
                     data-up={isUp}
                     role="button"
                     tabIndex={isUp ? 0 : -1}
-                    aria-label={`Answer: ${displayText}`}
-                    onClick={(e) => {
-                        console.log('Mole clicked', index, displayText);
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleMoleHit(e, moleRefs, containerRef);
-                    }}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            handleMoleHit(e, moleRefs, containerRef);
-                        }
-                    }}
+                    aria-label={`Answer: ${ans.text || ans.id}`}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleMoleHit(e, moleRefs, containerRef); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleMoleHit(e, moleRefs, containerRef); } }}
                 >
-                    <div className={styles.moleEyes}>
-                        <div className={styles.eye} />
-                        <div className={styles.eye} />
-                    </div>
+                    <div className={styles.moleEyes}><div className={styles.eye} /><div className={styles.eye} /></div>
                     <div className={styles.moleNose} />
                     <div className={styles.wordBubble}>
-                        {displayImage && (
-                            <img
-                                src={displayImage}
-                                alt={displayText}
-                            />
-                        )}
-                        <span>{displayText || ""}</span>
+                        {showImage && (<img src={ans.image} alt={ans.text || ans.id} />)}
+                        {showText && (<span>{ans.text || ""}</span>)}
                     </div>
                 </div>
             </div>
         );
     });
 
-    const rows = [[0, 1], [2, 3]]; // 2-2 layout for 4 answers
+    const rows = [[0, 1], [2, 3]];
 
     return (
         <div
             ref={containerRef}
             className={styles.gameContainer}
-            onClick={(e) => {
-                console.log('Container clicked');
-                e.preventDefault();
-                handleMoleHit(e, moleRefs, containerRef);
-            }}
+            onClick={(e) => { e.preventDefault(); handleMoleHit(e, moleRefs, containerRef); }}
             role="main"
             aria-label="Whack-a-Quiz Game"
         >
@@ -164,7 +110,7 @@ export default function WhackAMole({
                 <div className={styles.startScreen}>
                     <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>Whack-a-Quiz!</h1>
                     <p style={{ fontSize: "1.25rem", marginBottom: "1.5rem" }}>
-                        Hit the mole with the word that matches the picture. Be quick for more points!
+                        Hit the mole with the correct answer. Be quick for more points!
                     </p>
                     <button className={styles.startButton} onClick={startGame}>Start Game</button>
                 </div>
@@ -176,11 +122,11 @@ export default function WhackAMole({
                         {gameReport.isCompleted ? "🎉 Completed!" : "Game Over!"}
                     </h1>
                     <div style={{ fontSize: "1.25rem", marginBottom: "1.5rem", textAlign: "center" }}>
-                        {gameReport.isCompleted ? (
+                        {gameReport.isCompleted && (
                             <p style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#4CAF50" }}>
                                 Congratulations! You have completed all the questions! 🏆
                             </p>
-                        ) : null}
+                        )}
                         <p style={{ fontSize: "1.875rem", marginBottom: "1rem" }}>
                             Final score: <span style={{ color: "#4CAF50", fontWeight: "bold" }}>{gameReport.finalScore}</span>
                         </p>
@@ -210,19 +156,19 @@ export default function WhackAMole({
             <div className={styles.targetPane}>
                 {targetContent ? (
                     <div className={styles.targetContent}>
-                        {targetContent.questionImage && (
+                        {targetContent.promptImage && (
                             <img
-                                src={targetContent.questionImage}
-                                alt={targetContent.question}
+                                src={targetContent.promptImage}
+                                alt={targetContent.promptText || "Question image"}
                                 className={styles.targetImage}
                             />
                         )}
-                        <div className={styles.targetText}>
-                            {targetContent.question}
-                        </div>
+                        {targetContent.promptText && (
+                            <div className={styles.targetText}>{targetContent.promptText}</div>
+                        )}
                     </div>
                 ) : (
-                    <div className={styles.targetPlaceholder}>Pick the right word!</div>
+                    <div className={styles.targetPlaceholder}>Pick the right answer!</div>
                 )}
             </div>
 
@@ -241,11 +187,7 @@ export default function WhackAMole({
                 </div>
             ))}
 
-            <div
-                className={`${styles.hammer} ${feedback.hammerHit ? styles.hit : ""}`}
-                style={{ left: hammerPos.x, top: hammerPos.y }}
-            />
-
+            <div className={`${styles.hammer} ${feedback.hammerHit ? styles.hit : ""}`} style={{ left: hammerPos.x, top: hammerPos.y }} />
             <div className={`${styles.feedback} ${feedback.show ? styles.show : ""}`} style={{ color: feedback.color }}>
                 {feedback.text}
             </div>

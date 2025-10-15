@@ -1,6 +1,4 @@
-
 import { useCallback, useEffect, useRef, useState } from "react";
-
 export const DEFAULT_GAME_CONFIG = {
     moleCount: 4,
     gameDuration: 60,
@@ -12,89 +10,122 @@ export const DEFAULT_GAME_CONFIG = {
 
 export const DEFAULT_GAME_DATA = [
     {
-        question: "What animal is in the picture?",
-        questionImage: "https://upload.wikimedia.org/wikipedia/commons/2/26/YellowLabradorLooking_new.jpg",
-        answers: ["Dog", "Cat", "Bird", "Fish"],
-        correctAnswer: "Dog"
+        id: "q_math_4plus4",
+        type: "text_to_text",
+        promptText: "4 + 4 = ?",
+        promptImage: null,
+        displayMode: "text_only",
+        answers: [
+            { id: "a1", text: "6" },
+            { id: "a2", text: "7" },
+            { id: "a3", text: "8" },
+            { id: "a4", text: "9" },
+        ],
+        correctAnswerId: "a3",
+        tags: ["math", "addition"],
     },
+
+
     {
-        question: "Which picture shows an apple?",
+        id: "q_img_dog",
+        type: "image_to_text",
+        promptText: "What animal is in the picture?",
+        promptImage: "https://upload.wikimedia.org/wikipedia/commons/2/26/YellowLabradorLooking_new.jpg",
+        displayMode: "text_only",
+        answers: [
+            { id: "dog", text: "Dog" },
+            { id: "cat", text: "Cat" },
+            { id: "bird", text: "Bird" },
+            { id: "fish", text: "Fish" },
+        ],
+        correctAnswerId: "dog",
+    },
+
+    {
+        id: "q_text_to_image_apple",
+        type: "text_to_image",
+        promptText: "Which picture shows an apple?",
+        promptImage: null,
+        displayMode: "image_only",
         answers: [
             { id: "apple", text: "Apple", image: "https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg" },
             { id: "banana", text: "Banana", image: "https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg" },
             { id: "orange", text: "Orange", image: "https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.jpg" },
-            { id: "grape", text: "Grapes", image: "https://static.vecteezy.com/system/resources/thumbnails/007/697/457/small_2x/a-mouth-watering-isometric-icon-of-grapes-vector.jpg" }
+            { id: "grape", text: "Grapes", image: "https://static.vecteezy.com/system/resources/thumbnails/007/697/457/small_2x/a-mouth-watering-isometric-icon-of-grapes-vector.jpg" },
         ],
-        correctAnswer: { id: "apple", text: "Apple", image: "https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg" }
+        correctAnswerId: "apple",
     },
     {
-        question: "What shape is this?",
-        questionImage: "https://static.wikia.nocookie.net/scribblenauts/images/d/d1/Square.png/revision/latest?cb=20140813193140",
-        answers: ["Square", "Circle", "Triangle", "Rectangle"],
-        correctAnswer: "Square"
-    },
-    {
-        question: "Which animal lives in water?",
+        id: "q_image_to_image_shape",
+        type: "image_to_text",
+        promptText: "What shape is this?",
+        promptImage: "https://static.vecteezy.com/system/resources/previews/043/231/957/non_2x/simple-square-shape-icon-vector.jpg",
+        displayMode: "text_only",
         answers: [
-            { id: "dog", text: "Dog", image: "https://upload.wikimedia.org/wikipedia/commons/2/26/YellowLabradorLooking_new.jpg" },
-            { id: "cat", text: "Cat", image: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg" },
-            { id: "fish", text: "Fish", image: "https://www.shutterstock.com/image-vector/clownfish-vibrant-small-marine-fish-600nw-2488428137.jpg" },
-            { id: "bird", text: "Bird", image: "https://upload.wikimedia.org/wikipedia/commons/3/32/House_sparrow04.jpg" }
+            { id: "square", text: "Square", },
+            { id: "circle", text: "Circle", },
+            { id: "triangle", text: "Triangle", },
+            { id: "rectangle", text: "Rectangle", },
         ],
-        correctAnswer: { id: "fish", text: "Fish", image: "https://upload.wikimedia.org/wikipedia/commons/2/2d/Goldfish3.jpg" }
+        correctAnswerId: "square",
     },
     {
-        question: "What is the capital of Vietnam?",
-        answers: ["Hanoi", "Ho Chi Minh City", "Da Nang", "Hue"],
-        correctAnswer: "Hanoi"
+        id: "q_capital_vn",
+        type: "text_to_text",
+        promptText: "What is the capital of Vietnam?",
+        promptImage: null,
+        displayMode: "text_only",
+        answers: [
+            { id: "hn", text: "Hanoi" },
+            { id: "hcm", text: "Ho Chi Minh City" },
+            { id: "dn", text: "Da Nang" },
+            { id: "hue", text: "Hue" },
+        ],
+        correctAnswerId: "hn",
     },
     {
-        question: "Từ 'Cá' trong tiếng Anh là gì?",
-        answers: ["Fish", "Frog", "Bird", "Duck"],
-        correctAnswer: "Fish",
-        questionImage: "https://www.shutterstock.com/image-vector/clownfish-vibrant-small-marine-fish-600nw-2488428137.jpg"
+        id: "q_vi_en_fish",
+        type: "image_to_text",
+        promptText: "Từ 'Cá' trong tiếng Anh là gì?",
+        promptImage: "https://img.freepik.com/free-vector/hand-drawn-clown-fish-cartoon-illustration_23-2150683251.jpg?w=360",
+        displayMode: "text_only",
+        answers: [
+            { id: "fish", text: "Fish" },
+            { id: "frog", text: "Frog" },
+            { id: "bird", text: "Bird" },
+            { id: "duck", text: "Duck" },
+        ],
+        correctAnswerId: "fish",
     },
 ];
 
-const makeEmptyMoles = (n) => Array.from({ length: n }, () => ({ up: false, content: "" }));
+const normalizeGameData = (data) => data;
 
+const makeEmptyMoles = (n) => Array.from({ length: n }, () => ({ up: false, content: null }));
 
 function buildRoundOptions(gameData, moleCount, questionIndex) {
-
-    if (questionIndex >= gameData.length) {
-        return null;
-    }
+    if (questionIndex >= gameData.length) return null;
 
     const q = gameData[questionIndex];
-    const correct = q.correctAnswer;
-    const pool = q.answers ?? [];
+    const answers = q.answers ?? [];
+    const correctId = q.correctAnswerId;
 
-    const isSame = (a, b) => {
-        if (typeof a === 'string' && typeof b === 'string') {
-            return a === b;
-        }
-        if (a && b && a.id && b.id) {
-            return a.id === b.id;
-        }
-        return JSON.stringify(a) === JSON.stringify(b);
-    };
+    const correct = answers.find(a => a.id === correctId);
+    const distractors = answers.filter(a => a.id !== correctId);
 
-    const distractors = pool.filter(a => !isSame(a, correct));
-
-    let options = [correct];
-
+    let options = [];
+    if (correct) options.push(correct);
     for (let i = 0; i < Math.min(moleCount - 1, distractors.length); i++) {
         options.push(distractors[i]);
     }
 
-    while (options.length < moleCount) {
-        options.push(null);
-    }
+    while (options.length < moleCount) options.push(null);
 
-    return { question: q, correct, options: options };
+    return { question: q, correctId, options };
 }
 
 export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = DEFAULT_GAME_CONFIG) {
+    const data = normalizeGameData(gameData);
     const { moleCount, gameDuration, roundDelayMs, pointsPerCorrect, bonusPointsPerSecond, maxBonusTime } = gameConfig;
 
     const [score, setScore] = useState(0);
@@ -106,12 +137,12 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
     const [hammerPos, setHammerPos] = useState({ x: "50%", y: "50%" });
     const [pointPopups, setPointPopups] = useState([]);
     const [gameReport, setGameReport] = useState(null);
-    const [currentProgress, setCurrentProgress] = useState({ current: 0, total: gameData.length });
+    const [currentProgress, setCurrentProgress] = useState({ current: 0, total: data.length });
 
     const gameTimerRef = useRef(null);
     const roundTimerRef = useRef(null);
     const roundStartRef = useRef(Date.now());
-    const currentCorrectOptionRef = useRef(null);
+    const currentCorrectIdRef = useRef(null);
     const isGameActiveRef = useRef(false);
     const totalQuestionsRef = useRef(0);
     const correctAnswersRef = useRef(0);
@@ -150,7 +181,6 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
         return () => {
             if (gameTimerRef.current) window.clearInterval(gameTimerRef.current);
             if (roundTimerRef.current) window.clearTimeout(roundTimerRef.current);
-            // Clear all popup timeouts
             currentPopupTimeouts.forEach(timeoutId => window.clearTimeout(timeoutId));
             currentPopupTimeouts.clear();
         };
@@ -163,18 +193,20 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
         if (roundTimerRef.current) window.clearTimeout(roundTimerRef.current);
         setMoles(prev => prev.map(m => ({ ...m, up: false })));
 
-        // Generate game report
-        const accuracy = totalQuestionsRef.current > 0 ? (correctAnswersRef.current / totalQuestionsRef.current) * 100 : 0;
+        const accuracy = totalQuestionsRef.current > 0
+            ? (correctAnswersRef.current / totalQuestionsRef.current) * 100
+            : 0;
+
         setGameReport({
             finalScore: score,
             totalQuestions: totalQuestionsRef.current,
             correctAnswers: correctAnswersRef.current,
             accuracy: Math.round(accuracy),
-            gameDuration: gameDuration,
+            gameDuration,
             timeUsed: gameDuration - timeLeft,
-            isCompleted: currentQuestionIndexRef.current >= gameData.length
+            isCompleted: currentQuestionIndexRef.current >= data.length
         });
-    }, [score, timeLeft, gameDuration, gameData.length]);
+    }, [score, timeLeft, gameDuration, data.length]);
 
     const updateGameTimer = useCallback(() => {
         setTimeLeft(prev => {
@@ -189,7 +221,6 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
 
     const nextRound = useCallback(() => {
         if (!isGameActiveRef.current) return;
-
         if (roundTimerRef.current) window.clearTimeout(roundTimerRef.current);
 
         roundLockedRef.current = false;
@@ -199,28 +230,21 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
             if (!isGameActiveRef.current) return;
             roundLockedRef.current = false;
 
-            // Check if all questions are completed
-            if (currentQuestionIndexRef.current >= gameData.length) {
-                endGameInternal();
-                return;
+            if (currentQuestionIndexRef.current >= data.length) {
+                endGameInternal(); return;
             }
+            const roundData = buildRoundOptions(data, moleCount, currentQuestionIndexRef.current);
+            if (!roundData) { endGameInternal(); return; }
 
-            const roundData = buildRoundOptions(gameData, moleCount, currentQuestionIndexRef.current);
-
-            if (!roundData) {
-                endGameInternal();
-                return;
-            }
-
-            const { question, correct, options } = roundData;
-            currentCorrectOptionRef.current = correct;
+            const { question, correctId, options } = roundData;
+            currentCorrectIdRef.current = correctId;
             setTargetContent(question);
             roundStartRef.current = Date.now();
             totalQuestionsRef.current++;
             setMoles(options.map(answer => ({ up: true, content: answer })));
-            setCurrentProgress({ current: currentQuestionIndexRef.current + 1, total: gameData.length });
+            setCurrentProgress({ current: currentQuestionIndexRef.current + 1, total: data.length });
         }, roundDelayMs);
-    }, [gameData, moleCount, roundDelayMs, endGameInternal]);
+    }, [data, moleCount, roundDelayMs, endGameInternal]);
 
     const startGame = useCallback(() => {
         if (gameTimerRef.current) window.clearInterval(gameTimerRef.current);
@@ -234,12 +258,11 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
         setGameReport(null);
         totalQuestionsRef.current = 0;
         correctAnswersRef.current = 0;
-        currentQuestionIndexRef.current = 0; // Reset question index
-        setCurrentProgress({ current: 0, total: gameData.length });
+        currentQuestionIndexRef.current = 0;
+        setCurrentProgress({ current: 0, total: data.length });
         gameTimerRef.current = window.setInterval(updateGameTimer, 1000);
-        if (roundTimerRef.current) window.clearTimeout(roundTimerRef.current);
         roundTimerRef.current = window.setTimeout(nextRound, 100);
-    }, [gameDuration, updateGameTimer, initSounds, nextRound, gameData.length]);
+    }, [gameDuration, updateGameTimer, initSounds, nextRound, data.length]);
 
     const showFeedback = useCallback((text, color) => {
         setFeedback({ show: true, text, color, hammerHit: true });
@@ -259,53 +282,26 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
             setPointPopups(prev => prev.filter(p => p.id !== id));
             popupTimeoutsRef.current.delete(timeoutId);
         }, 1000);
-
         popupTimeoutsRef.current.add(timeoutId);
     }, []);
 
     const handleMoleHit = useCallback((e, moleRefs, containerRef) => {
         const now = Date.now();
-        console.log('handleMoleHit called', {
-            isGameActive: isGameActiveRef.current,
-            roundLocked: roundLockedRef.current,
-            timeSinceLastClick: now - lastClickTimeRef.current
-        });
-
-        if (now - lastClickTimeRef.current < CLICK_DEBOUNCE_MS) {
-            console.log('Click debounced');
-            return;
-        }
-
+        if (now - lastClickTimeRef.current < CLICK_DEBOUNCE_MS) return;
         if (!isGameActiveRef.current || roundLockedRef.current) return;
 
         lastClickTimeRef.current = now;
         roundLockedRef.current = true;
 
-        const target = e.target;
+        let node = e.target.closest('[data-up="true"]');
+        if (!node) node = e.target.closest('[data-id]');
+        if (!node) node = e.target.closest('._mole_');
+        if (!node) { roundLockedRef.current = false; return; }
 
-        let moleNode = target.closest('[data-up="true"]');
-        if (!moleNode) {
-            moleNode = target.closest('[data-id]');
-        }
-        if (!moleNode) {
-            moleNode = target.closest('._mole_');
-        }
+        const idx = node.getAttribute('data-id');
+        const ansId = node.getAttribute('data-content-id'); // so sánh theo ID
+        if (ansId == null) {
 
-        console.log('target:', target, 'moleNode:', moleNode);
-        if (!moleNode) {
-            console.log('No mole node found');
-            roundLockedRef.current = false;
-            return;
-        }
-
-        const idStr = moleNode.getAttribute('data-id');
-        const hitContentStr = moleNode.getAttribute('data-content');
-        if (!idStr) {
-            roundLockedRef.current = false;
-            return;
-        }
-
-        if (hitContentStr === '') {
             setFeedback(f => ({ ...f, hammerHit: true }));
             window.setTimeout(() => setFeedback(f => ({ ...f, hammerHit: false })), 150);
             showFeedback('❌', 'red');
@@ -317,61 +313,37 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
         window.setTimeout(() => setFeedback(f => ({ ...f, hammerHit: false })), 150);
 
         const timeTaken = (Date.now() - roundStartRef.current) / 1000;
-
-        let hitContent;
-        try {
-            hitContent = JSON.parse(hitContentStr);
-        } catch {
-            hitContent = hitContentStr;
-        }
-
-        let isCorrect = false;
-        const correctAnswer = currentCorrectOptionRef.current;
-
-        if (typeof hitContent === 'string' && typeof correctAnswer === 'string') {
-            isCorrect = hitContent === correctAnswer;
-        } else if (typeof hitContent === 'object' && typeof correctAnswer === 'object') {
-            // Use ID comparison if available, fallback to JSON for backward compatibility
-            if (hitContent && correctAnswer && hitContent.id && correctAnswer.id) {
-                isCorrect = hitContent.id === correctAnswer.id;
-            } else {
-                isCorrect = JSON.stringify(hitContent) === JSON.stringify(correctAnswer);
-            }
-        }
+        const isCorrect = ansId === currentCorrectIdRef.current;
 
         if (isCorrect) {
             if (soundsReadyRef.current && correctSoundRef.current) {
                 correctSoundRef.current.triggerAttackRelease('C5', '8n');
             }
             correctAnswersRef.current++;
-            currentQuestionIndexRef.current++; // Move to next question
+            currentQuestionIndexRef.current++;
             const timeBonus = Math.max(0, maxBonusTime - timeTaken);
             const bonusPoints = Math.round(bonusPointsPerSecond * timeBonus);
             const totalPoints = pointsPerCorrect + bonusPoints;
 
             setScore(s => s + totalPoints);
             showFeedback('⭐', 'gold');
-            createPointPopup(totalPoints, moleRefs.current[Number(idStr)], containerRef.current);
+            createPointPopup(totalPoints, moleRefs.current[Number(idx)], containerRef.current);
             setMoles(prev => prev.map(() => ({ up: false, content: null })));
-            if (currentQuestionIndexRef.current >= gameData.length) {
-                setTimeout(() => {
-                    endGameInternal();
-                }, 1000);
-            } else {
 
-                setTimeout(() => {
-                    nextRound();
-                }, 50);
+            if (currentQuestionIndexRef.current >= data.length) {
+                setTimeout(() => endGameInternal(), 600);
+            } else {
+                setTimeout(() => nextRound(), 80);
             }
         } else {
             if (soundsReadyRef.current && wrongSoundRef.current) {
                 wrongSoundRef.current.triggerAttackRelease('A2', '8n');
             }
             showFeedback('❌', 'red');
-            setMoles(prev => prev.map((m, i) => (i === Number(idStr) ? { ...m, up: false } : m)));
+            setMoles(prev => prev.map((m, i) => (i === Number(idx) ? { ...m, up: false } : m)));
             roundLockedRef.current = false;
         }
-    }, [createPointPopup, showFeedback, pointsPerCorrect, bonusPointsPerSecond, maxBonusTime, nextRound, endGameInternal, gameData.length]);
+    }, [createPointPopup, showFeedback, pointsPerCorrect, bonusPointsPerSecond, maxBonusTime, nextRound, endGameInternal, data.length]);
 
     const restartGame = useCallback(() => startGame(), [startGame]);
 
