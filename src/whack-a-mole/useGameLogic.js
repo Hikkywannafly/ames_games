@@ -210,16 +210,20 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
             ? (correctAnswersRef.current / totalQuestionsRef.current) * 100
             : 0;
 
-        setGameReport({
-            finalScore: score,
-            totalQuestions: totalQuestionsRef.current,
-            correctAnswers: correctAnswersRef.current,
-            accuracy: Math.round(accuracy),
-            gameDuration,
-            timeUsed: gameDuration - timeLeft,
-            isCompleted: currentQuestionIndexRef.current >= data.length
+
+        setScore(currentScore => {
+            setGameReport({
+                finalScore: currentScore,
+                totalQuestions: totalQuestionsRef.current,
+                correctAnswers: correctAnswersRef.current,
+                accuracy: Math.round(accuracy),
+                gameDuration,
+                timeUsed: gameDuration - timeLeft,
+                isCompleted: currentQuestionIndexRef.current >= data.length
+            });
+            return currentScore;
         });
-    }, [score, timeLeft, gameDuration, data.length]);
+    }, [timeLeft, gameDuration, data.length]);
 
     const updateGameTimer = useCallback(() => {
         setTimeLeft(prev => {
