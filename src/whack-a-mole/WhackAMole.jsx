@@ -198,12 +198,9 @@ export default function WhackAMole({
                     </div>
 
                     <div className={styles.playArea}>
-                        <div className={styles.row}>
-                            {rows[0].map(i => <MoleCell key={i} mole={moles[i]} index={i} />)}
-                        </div>
-                        <div className={styles.row}>
-                            {rows[1].map(i => <MoleCell key={i} mole={moles[i]} index={i} />)}
-                        </div>
+                        {moles.map((mole, i) => (
+                            <MoleCell key={i} mole={mole} index={i} />
+                        ))}
                     </div>
                 </>
             )}

@@ -1,6 +1,6 @@
 .gameContainer {
     width: 100%;
-    max-width: 480px;
+    max-width: 100%;
     height: 100vh;
     margin: 0 auto;
     position: relative;
@@ -11,6 +11,20 @@
     font-family: 'Fredoka One', cursive;
     touch-action: manipulation;
     user-select: none;
+}
+
+/* Desktop - wider container */
+@media (min-width: 768px) {
+    .gameContainer {
+        max-width: 900px;
+    }
+}
+
+/* Large Desktop - even wider */
+@media (min-width: 1024px) {
+    .gameContainer {
+        max-width: 1000px;
+    }
 }
 
 
@@ -292,10 +306,20 @@
 .statsGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    align-items: center;
     gap: 0.75rem;
-    margin-bottom: 1rem;
+    margin: 0 auto 1rem auto;
+
     width: 100%;
     max-width: 400px;
+}
+
+/* Desktop - wider stats grid */
+@media (min-width: 768px) {
+    .statsGrid {
+        max-width: 500px;
+        gap: 1rem;
+    }
 }
 
 .statItem {
@@ -422,24 +446,43 @@
 /* Header + Target */
 .headerPane {
     flex-shrink: 0;
-    padding: 16px;
+    padding: 12px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     color: #fff;
-    font-size: 28px;
+    font-size: 20px;
+    gap: 8px;
+}
+
+/* Desktop header */
+@media (min-width: 768px) {
+    .headerPane {
+        padding: 16px 24px;
+        font-size: 28px;
+        gap: 16px;
+    }
 }
 
 
 .targetPane {
     margin: 8px 16px 0;
-    height: 160px;
+    height: 140px;
     background: rgba(255, 255, 255, 0.5);
     border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 10px;
+}
+
+/* Desktop target pane */
+@media (min-width: 768px) {
+    .targetPane {
+        margin: 8px 24px 0;
+        height: 160px;
+        padding: 12px;
+    }
 }
 
 .targetContent {
@@ -483,13 +526,55 @@
 .playArea {
     flex: 1;
     position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 36px;
+    padding: 28px 32px;
+    align-content: center;
+    justify-items: center;
+    max-width: 100%;
+    min-height: 0;
+    /* Fix flex overflow */
 }
 
+/* Small mobile - tối ưu spacing */
+@media (max-width: 400px) {
+    .playArea {
+        gap: 86px 28px;
+        padding: 24px 28px;
+    }
+}
+
+/* Medium mobile - balanced spacing */
+@media (min-width: 401px) and (max-width: 767px) {
+    .playArea {
+        gap: 84px 40px;
+        /* Tăng gap chiều cao từ 36px lên 44px */
+        padding: 28px 36px;
+    }
+}
+
+/* Desktop - 4 columns with optimal spacing */
+@media (min-width: 768px) {
+    .playArea {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 40px 32px;
+        /* Tăng gap để to hơn */
+        padding: 40px 48px;
+        /* Tăng padding */
+    }
+}
+
+/* Large Desktop - more breathing room */
+@media (min-width: 1024px) {
+    .playArea {
+        gap: 48px 36px;
+        /* Tăng gap nhiều hơn */
+        padding: 48px 56px;
+    }
+}
+
+/* Remove old row styles - no longer needed */
 .row {
     width: 100%;
     display: flex;
@@ -506,14 +591,57 @@
 /* Hole */
 .hole {
     position: relative;
-    width: 100px;
-    height: 50px;
+    width: 100%;
+    max-width: 120px;
+    height: 48px;
     background-color: #A0522D;
     border-radius: 50% / 100%;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    border: 5px solid #6B3E26;
+    border: 3px solid #6B3E26;
     overflow: visible;
+    box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Small mobile - compact */
+@media (max-width: 400px) {
+    .hole {
+        max-width: 110px;
+        height: 45px;
+        border-width: 3px;
+
+    }
+}
+
+/* Medium mobile - balanced */
+@media (min-width: 401px) and (max-width: 767px) {
+    .hole {
+        max-width: 125px;
+        height: 50px;
+        border-width: 3px;
+    }
+}
+
+/* Desktop - compact for 4 columns */
+@media (min-width: 768px) {
+    .hole {
+        max-width: 115px;
+        /* Tăng từ 95px */
+        height: 56px;
+        /* Tăng từ 48px */
+        border-width: 4px;
+    }
+}
+
+/* Large Desktop - slightly bigger */
+@media (min-width: 1024px) {
+    .hole {
+        max-width: 130px;
+        /* Tăng từ 105px */
+        height: 62px;
+        /* Tăng từ 52px */
+        border-width: 4px;
+    }
 }
 
 
@@ -523,17 +651,66 @@
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%) translateY(100%);
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     background-color: #C3A18F;
     border-radius: 50%;
-    border: 5px solid #8B5E34;
+    border: 3px solid #8B5E34;
     cursor: pointer;
     transition: transform .3s ease-in-out;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Small mobile - compact but touchable */
+@media (max-width: 400px) {
+    .mole {
+        width: 70px;
+        height: 70px;
+        border-width: 3px;
+    }
+}
+
+/* Medium mobile - nice size */
+@media (min-width: 401px) and (max-width: 767px) {
+    .mole {
+        width: 82px;
+        height: 82px;
+        border-width: 3px;
+    }
+}
+
+/* Desktop - compact for 4 columns */
+@media (min-width: 768px) {
+    .mole {
+        width: 85px;
+        /* Tăng từ 68px */
+        height: 85px;
+        border-width: 4px;
+    }
+}
+
+/* Large Desktop - comfortable size */
+@media (min-width: 1024px) {
+    .mole {
+        width: 95px;
+        /* Tăng từ 75px */
+        height: 95px;
+        border-width: 4px;
+    }
+}
+
+/* Large Desktop - slightly bigger */
+@media (min-width: 1024px) {
+    .mole {
+        width: 95px;
+        /* Giữ nguyên, xóa duplicate */
+        height: 95px;
+        border-width: 4px;
+    }
 }
 
 .up {
@@ -564,14 +741,16 @@
 
 .wordBubble {
     position: absolute;
-    bottom: 85%;
+    bottom: 95%;
+    /* Tăng khoảng cách từ mole */
     background: #fff;
-    padding: 8px 12px;
-    border-radius: 15px;
-    border: 3px solid #333;
-    font-size: 14px;
+    padding: 7px 11px;
+    border-radius: 10px;
+    border: 2.5px solid #333;
+    font-size: 12px;
     color: #333;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
     transform-origin: bottom center;
     transform: scale(0);
     opacity: 0;
@@ -580,17 +759,101 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    max-width: 120px;
+    max-width: 110px;
+    min-width: 50px;
     text-align: center;
     word-wrap: break-word;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+/* Small mobile - compact */
+@media (max-width: 400px) {
+    .wordBubble {
+        font-size: 11px;
+        padding: 6px 10px;
+        max-width: 100px;
+        bottom: 100%;
+    }
+}
+
+/* Medium mobile - readable */
+@media (min-width: 401px) and (max-width: 767px) {
+    .wordBubble {
+        font-size: 13px;
+        padding: 8px 12px;
+        max-width: 130px;
+        bottom: 98%;
+    }
+}
+
+/* Desktop - compact bubble */
+@media (min-width: 768px) {
+    .wordBubble {
+        font-size: 12px;
+        /* Tăng từ 10px */
+        padding: 7px 11px;
+        /* Tăng từ 5px 8px */
+        max-width: 120px;
+        /* Tăng từ 100px */
+        gap: 4px;
+    }
+}
+
+/* Large Desktop - balanced */
+@media (min-width: 1024px) {
+    .wordBubble {
+        font-size: 13px;
+        /* Tăng từ 11px */
+        padding: 8px 13px;
+        /* Tăng từ 6px 10px */
+        max-width: 135px;
+        /* Tăng từ 110px */
+    }
 }
 
 .wordBubble img {
-    width: 50px;
-    height: 50px;
+    width: 42px;
+    height: 42px;
     object-fit: cover;
     border-radius: 6px;
     flex-shrink: 0;
+}
+
+/* Small mobile - compact images */
+@media (max-width: 400px) {
+    .wordBubble img {
+        width: 38px;
+        height: 38px;
+        border-radius: 5px;
+    }
+}
+
+/* Medium mobile - nice images */
+@media (min-width: 401px) and (max-width: 767px) {
+    .wordBubble img {
+        width: 50px;
+        height: 50px;
+        border-radius: 7px;
+    }
+}
+
+/* Desktop - compact images */
+@media (min-width: 768px) {
+    .wordBubble img {
+        width: 48px;
+        /* Tăng từ 38px */
+        height: 48px;
+    }
+}
+
+/* Large Desktop - balanced images */
+@media (min-width: 1024px) {
+    .wordBubble img {
+        width: 55px;
+        /* Tăng từ 42px */
+        height: 55px;
+    }
 }
 
 .wordBubble span {
