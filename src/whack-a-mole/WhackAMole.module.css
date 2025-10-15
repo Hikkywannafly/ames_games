@@ -28,25 +28,395 @@
     z-index: 200;
     text-align: center;
     padding: 20px;
+    overflow: hidden;
+}
+
+
+/* Floating Moles Animation */
+.floatingMole1,
+.floatingMole2,
+.floatingMole3,
+.floatingMole4 {
+    position: absolute;
+    font-size: 60px;
+    opacity: 0.7;
+    animation: float 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.floatingMole1 {
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+    animation-duration: 4s;
+}
+
+.floatingMole2 {
+    top: 20%;
+    right: 15%;
+    animation-delay: 1s;
+    animation-duration: 5s;
+}
+
+.floatingMole3 {
+    bottom: 20%;
+    left: 15%;
+    animation-delay: 2s;
+    animation-duration: 4.5s;
+}
+
+.floatingMole4 {
+    bottom: 15%;
+    right: 10%;
+    animation-delay: 1.5s;
+    animation-duration: 5.5s;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    25% {
+        transform: translateY(-20px) rotate(5deg);
+    }
+
+    50% {
+        transform: translateY(-40px) rotate(-5deg);
+    }
+
+    75% {
+        transform: translateY(-20px) rotate(3deg);
+    }
+}
+
+/* Title Container */
+.titleContainer {
+    margin-bottom: 2rem;
+    animation: slideDown 0.8s ease-out;
+}
+
+.gameTitle {
+    font-size: 3.5rem;
+    margin: 0;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(45deg, #95ff91, #3ce5ff, #0331ff);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.titleUnderline {
+    width: 200px;
+    height: 5px;
+    background: linear-gradient(90deg, transparent, #FFD700, transparent);
+    margin: 1rem auto 0;
+    border-radius: 5px;
+    animation: expandWidth 2s ease-in-out infinite;
+}
+
+@keyframes expandWidth {
+
+    0%,
+    100% {
+        width: 200px;
+    }
+
+    50% {
+        width: 280px;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Game Description */
+.gameDescription {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 1s ease-out 0.3s backwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Victory animation - confetti and celebration */
+.victory {
+    animation: victoryPulse 0.6s ease-in-out;
+    background: rgba(76, 175, 80, 0.8) !important;
+    /* Green background for victory */
+}
+
+.victory::before {
+    content: '🎊';
+    position: absolute;
+    font-size: 80px;
+    animation: confettiLeft 2s ease-out infinite;
+    left: 10%;
+    top: 20%;
+}
+
+.victory::after {
+    content: '🎉';
+    position: absolute;
+    font-size: 80px;
+    animation: confettiRight 2s ease-out infinite;
+    right: 10%;
+    top: 20%;
+}
+
+@keyframes victoryPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes confettiLeft {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(400px) rotate(-180deg);
+        opacity: 0;
+    }
+}
+
+@keyframes confettiRight {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(400px) rotate(180deg);
+        opacity: 0;
+    }
+}
+
+/* Defeat animation - sad shake */
+.defeat {
+    animation: sadShake 0.5s ease-in-out;
+    background: rgba(255, 87, 34, 0.75) !important;
+    /* Orange-red background for defeat */
+}
+
+.defeat::before {
+    content: '😢';
+    position: absolute;
+    font-size: 60px;
+    animation: tearDrop 2s ease-in infinite;
+    left: 20%;
+    top: 30%;
+}
+
+.defeat::after {
+    content: '😢';
+    position: absolute;
+    font-size: 60px;
+    animation: tearDrop 2s ease-in infinite 0.5s;
+    right: 20%;
+    top: 30%;
+}
+
+@keyframes sadShake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+@keyframes tearDrop {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(300px);
+        opacity: 0;
+    }
+}
+
+/* Stats Grid - Responsive layout */
+.statsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.statItem {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.statLabel {
+    font-size: 0.875rem;
+    margin: 0 0 0.25rem 0;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.statValue {
+    font-size: 1.5rem;
+    margin: 0;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+    .statsGrid {
+        gap: 0.5rem;
+    }
+
+    .statItem {
+        padding: 0.5rem;
+    }
+
+    .statLabel {
+        font-size: 0.75rem;
+    }
+
+    .statValue {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 320px) {
+    .statsGrid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .statItem {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .statLabel,
+    .statValue {
+        margin: 0;
+    }
 }
 
 
 .startButton {
-    padding: 15px 30px;
-    font-size: 24px;
-    background-color: #FFC107;
-    color: #333;
-    border: 5px solid #FFA000;
-    border-radius: 20px;
+    padding: 18px 40px;
+    font-size: 28px;
+    background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
     cursor: pointer;
     margin-top: 20px;
-    box-shadow: 0 5px 0 #E69100;
+    box-shadow: 0 8px 0 #E69100, 0 12px 20px rgba(0, 0, 0, 0.3);
     transition: transform .1s ease, box-shadow .1s ease;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.startButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 0 #E69100, 0 14px 25px rgba(0, 0, 0, 0.4);
 }
 
 .startButton:active {
-    transform: translateY(5px);
-    box-shadow: 0 0 0 #E69100;
+    transform: translateY(8px);
+    box-shadow: 0 0 0 #E69100, 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.buttonText {
+    font-size: 28px;
+}
+
+.buttonIcon {
+    font-size: 32px;
+    animation: rocket 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes rocket {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
 }
 
 /* Header + Target */

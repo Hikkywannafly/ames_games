@@ -108,36 +108,59 @@ export default function WhackAMole({
         >
             {!isGameActive && timeLeft === gameConfig.gameDuration && (
                 <div className={styles.startScreen}>
-                    <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>Whack-a-Quiz!</h1>
-                    <p style={{ fontSize: "1.25rem", marginBottom: "1.5rem" }}>
-                        Hit the mole with the correct answer. Be quick for more points!
+                    <div className={styles.floatingMole1}>🦫</div>
+                    <div className={styles.floatingMole2}>🦫</div>
+                    <div className={styles.floatingMole3}>🦫</div>
+                    <div className={styles.floatingMole4}>🦫</div>
+                    <div className={styles.titleContainer}>
+                        <h1 className={styles.gameTitle}>Whack-a-Quiz!</h1>
+                        <div className={styles.titleUnderline}></div>
+                    </div>
+                    <p className={styles.gameDescription}>
+                        Hit the mole with the correct answer<br />
+                        Be quick for more points!
                     </p>
-                    <button className={styles.startButton} onClick={startGame}>Start Game</button>
+                    <button className={styles.startButton} onClick={startGame}>
+                        <span className={styles.buttonText}>Start Game</span>
+                        <span className={styles.buttonIcon}>🚀</span>
+                    </button>
                 </div>
             )}
 
             {!isGameActive && timeLeft < gameConfig.gameDuration && gameReport && (
-                <div className={styles.endScreen}>
+                <div className={`${styles.endScreen} ${gameReport.accuracy === 100 ? styles.victory : styles.defeat}`}>
                     <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-                        {gameReport.isCompleted ? "🎉 Completed!" : "Game Over!"}
+                        {gameReport.accuracy === 100 ? "🎉 Perfect!" : "Game Over!"}
                     </h1>
                     <div style={{ fontSize: "1.25rem", marginBottom: "1.5rem", textAlign: "center" }}>
-                        {gameReport.isCompleted && (
-                            <p style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#4CAF50" }}>
-                                Congratulations! You have completed all the questions! 🏆
+                        {gameReport.accuracy === 100 ? (
+                            <p style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#FFD700" }}>
+                                Congratulations! You got them all correct! 🏆
+                            </p>
+                        ) : (
+                            <p style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#FFA726" }}>
+                                Good try! Keep practicing and you'll do even better! 💪✨
                             </p>
                         )}
                         <p style={{ fontSize: "1.875rem", marginBottom: "1rem" }}>
-                            Final score: <span style={{ color: "#4CAF50", fontWeight: "bold" }}>{gameReport.finalScore}</span>
+                            Final score: <span style={{ color: gameReport.accuracy === 100 ? "#FFD700" : "#FFA726", fontWeight: "bold" }}>{gameReport.finalScore}</span>
                         </p>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
-                            <div>
-                                <p>Number of questions: {gameReport.totalQuestions}</p>
-                                <p>Correct: {gameReport.correctAnswers}</p>
+                        <div className={styles.statsGrid}>
+                            <div className={styles.statItem}>
+                                <p className={styles.statLabel}>Questions:</p>
+                                <p className={styles.statValue}>{gameReport.totalQuestions}</p>
                             </div>
-                            <div>
-                                <p>Accuracy: {gameReport.accuracy}%</p>
-                                <p>Time: {gameReport.timeUsed}s</p>
+                            <div className={styles.statItem}>
+                                <p className={styles.statLabel}>Correct:</p>
+                                <p className={styles.statValue}>{gameReport.correctAnswers}</p>
+                            </div>
+                            <div className={styles.statItem}>
+                                <p className={styles.statLabel}>Accuracy:</p>
+                                <p className={styles.statValue}>{gameReport.accuracy}%</p>
+                            </div>
+                            <div className={styles.statItem}>
+                                <p className={styles.statLabel}>Time:</p>
+                                <p className={styles.statValue}>{gameReport.timeUsed}s</p>
                             </div>
                         </div>
                     </div>
@@ -145,41 +168,45 @@ export default function WhackAMole({
                 </div>
             )}
 
-            <div className={styles.headerPane}>
-                <div>Score: <span>{score}</span></div>
-                <div>Time: <span>{timeLeft}</span></div>
-                {isGameActive && targetContent && (
-                    <div>Progress: <span>{currentProgress.current}/{currentProgress.total}</span></div>
-                )}
-            </div>
-
-            <div className={styles.targetPane}>
-                {targetContent ? (
-                    <div className={styles.targetContent}>
-                        {targetContent.promptImage && (
-                            <img
-                                src={targetContent.promptImage}
-                                alt={targetContent.promptText || "Question image"}
-                                className={styles.targetImage}
-                            />
-                        )}
-                        {targetContent.promptText && (
-                            <div className={styles.targetText}>{targetContent.promptText}</div>
+            {isGameActive && (
+                <>
+                    <div className={styles.headerPane}>
+                        <div>Score: <span>{score}</span></div>
+                        <div>Time: <span>{timeLeft}</span></div>
+                        {targetContent && (
+                            <div>Progress: <span>{currentProgress.current}/{currentProgress.total}</span></div>
                         )}
                     </div>
-                ) : (
-                    <div className={styles.targetPlaceholder}>Pick the right answer!</div>
-                )}
-            </div>
 
-            <div className={styles.playArea}>
-                <div className={styles.row}>
-                    {rows[0].map(i => <MoleCell key={i} mole={moles[i]} index={i} />)}
-                </div>
-                <div className={styles.row}>
-                    {rows[1].map(i => <MoleCell key={i} mole={moles[i]} index={i} />)}
-                </div>
-            </div>
+                    <div className={styles.targetPane}>
+                        {targetContent ? (
+                            <div className={styles.targetContent}>
+                                {targetContent.promptImage && (
+                                    <img
+                                        src={targetContent.promptImage}
+                                        alt={targetContent.promptText || "Question image"}
+                                        className={styles.targetImage}
+                                    />
+                                )}
+                                {targetContent.promptText && (
+                                    <div className={styles.targetText}>{targetContent.promptText}</div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className={styles.targetPlaceholder}>Pick the right answer!</div>
+                        )}
+                    </div>
+
+                    <div className={styles.playArea}>
+                        <div className={styles.row}>
+                            {rows[0].map(i => <MoleCell key={i} mole={moles[i]} index={i} />)}
+                        </div>
+                        <div className={styles.row}>
+                            {rows[1].map(i => <MoleCell key={i} mole={moles[i]} index={i} />)}
+                        </div>
+                    </div>
+                </>
+            )}
 
             {pointPopups.map(p => (
                 <div key={p.id} className={styles.pointPopup} style={{ left: p.left, top: p.top }}>

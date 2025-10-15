@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 export const DEFAULT_GAME_CONFIG = {
     moleCount: 4,
     gameDuration: 60,
@@ -99,7 +99,17 @@ export const DEFAULT_GAME_DATA = [
     },
 ];
 
-const normalizeGameData = (data) => data;
+const shuffleArray = (array) => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+};
+
+
+const normalizeGameData = (data) => shuffleArray(data);
 
 const makeEmptyMoles = (n) => Array.from({ length: n }, () => ({ up: false, content: null }));
 
@@ -121,11 +131,14 @@ function buildRoundOptions(gameData, moleCount, questionIndex) {
 
     while (options.length < moleCount) options.push(null);
 
+    options = shuffleArray(options);
+
     return { question: q, correctId, options };
 }
 
 export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = DEFAULT_GAME_CONFIG) {
-    const data = normalizeGameData(gameData);
+    // Chỉ shuffle một lần duy nhất khi gameData thay đổi
+    const data = useMemo(() => normalizeGameData(gameData), [gameData]);
     const { moleCount, gameDuration, roundDelayMs, pointsPerCorrect, bonusPointsPerSecond, maxBonusTime } = gameConfig;
 
     const [score, setScore] = useState(0);
@@ -320,7 +333,6 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
                 correctSoundRef.current.triggerAttackRelease('C5', '8n');
             }
             correctAnswersRef.current++;
-            currentQuestionIndexRef.current++;
             const timeBonus = Math.max(0, maxBonusTime - timeTaken);
             const bonusPoints = Math.round(bonusPointsPerSecond * timeBonus);
             const totalPoints = pointsPerCorrect + bonusPoints;
@@ -329,19 +341,18 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
             showFeedback('⭐', 'gold');
             createPointPopup(totalPoints, moleRefs.current[Number(idx)], containerRef.current);
             setMoles(prev => prev.map(() => ({ up: false, content: null })));
-
-            if (currentQuestionIndexRef.current >= data.length) {
-                setTimeout(() => endGameInternal(), 600);
-            } else {
-                setTimeout(() => nextRound(), 80);
-            }
         } else {
             if (soundsReadyRef.current && wrongSoundRef.current) {
                 wrongSoundRef.current.triggerAttackRelease('A2', '8n');
             }
             showFeedback('❌', 'red');
-            setMoles(prev => prev.map((m, i) => (i === Number(idx) ? { ...m, up: false } : m)));
-            roundLockedRef.current = false;
+            setMoles(prev => prev.map(() => ({ up: false, content: null })));
+        }
+        currentQuestionIndexRef.current++;
+        if (currentQuestionIndexRef.current >= data.length) {
+            setTimeout(() => endGameInternal(), 600);
+        } else {
+            setTimeout(() => nextRound(), 80);
         }
     }, [createPointPopup, showFeedback, pointsPerCorrect, bonusPointsPerSecond, maxBonusTime, nextRound, endGameInternal, data.length]);
 
