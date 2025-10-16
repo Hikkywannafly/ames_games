@@ -137,7 +137,7 @@ function buildRoundOptions(gameData, moleCount, questionIndex) {
 }
 
 export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = DEFAULT_GAME_CONFIG) {
-    // Chỉ shuffle một lần duy nhất khi gameData thay đổi
+
     const data = useMemo(() => normalizeGameData(gameData), [gameData]);
     const { moleCount, gameDuration, roundDelayMs, pointsPerCorrect, bonusPointsPerSecond, maxBonusTime } = gameConfig;
 
@@ -164,28 +164,24 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
     const currentQuestionIndexRef = useRef(0);
     const CLICK_DEBOUNCE_MS = 50;
 
-    const soundsReadyRef = useRef(false);
     const correctSoundRef = useRef(null);
     const wrongSoundRef = useRef(null);
+    const finalSoundRef = useRef(null);
     const popupTimeoutsRef = useRef(new Set());
 
-    const initSounds = useCallback(async () => {
-        if (soundsReadyRef.current) return;
-        const Tone = (typeof window !== "undefined" && window.Tone) || null;
-        if (!Tone) return;
+    const initSounds = useCallback(() => {
+        if (correctSoundRef.current && wrongSoundRef.current && finalSoundRef.current) return;
         try {
-            await Tone.start();
-            correctSoundRef.current = new Tone.Synth({
-                oscillator: { type: "triangle" },
-                envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 },
-            }).toDestination();
-            wrongSoundRef.current = new Tone.Synth({
-                oscillator: { type: "square" },
-                envelope: { attack: 0.01, decay: 0.4, sustain: 0.1, release: 0.5 },
-            }).toDestination();
-            soundsReadyRef.current = true;
-        } catch {
-            soundsReadyRef.current = false;
+
+            correctSoundRef.current = new Audio(new URL('../assets/correct.wav', import.meta.url).href);
+            wrongSoundRef.current = new Audio(new URL('../assets/error.wav', import.meta.url).href);
+            finalSoundRef.current = new Audio(new URL('../assets/final.ogg', import.meta.url).href);
+
+            correctSoundRef.current.volume = 0.5;
+            wrongSoundRef.current.volume = 0.5;
+            finalSoundRef.current.volume = 0.6;
+        } catch (error) {
+            console.error('Failed to load sounds:', error);
         }
     }, []);
 
@@ -210,6 +206,11 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
             ? (correctAnswersRef.current / totalQuestionsRef.current) * 100
             : 0;
 
+
+        if (finalSoundRef.current) {
+            finalSoundRef.current.currentTime = 0;
+            finalSoundRef.current.play().catch(e => console.error('Error playing final sound:', e));
+        }
 
         setScore(currentScore => {
             setGameReport({
@@ -283,7 +284,7 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
 
     const showFeedback = useCallback((text, color) => {
         setFeedback({ show: true, text, color, hammerHit: true });
-        window.setTimeout(() => setFeedback({ show: false, text: "", color: "", hammerHit: false }), 500);
+        window.setTimeout(() => setFeedback({ show: false, text: "", color: "", hammerHit: false }), 1000);
     }, []);
 
     const createPointPopup = useCallback((points, moleElement, containerElement) => {
@@ -333,8 +334,9 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
         const isCorrect = ansId === currentCorrectIdRef.current;
 
         if (isCorrect) {
-            if (soundsReadyRef.current && correctSoundRef.current) {
-                correctSoundRef.current.triggerAttackRelease('C5', '8n');
+            if (correctSoundRef.current) {
+                correctSoundRef.current.currentTime = 0; // Reset về đầu
+                correctSoundRef.current.play().catch(e => console.error('Error playing correct sound:', e));
             }
             correctAnswersRef.current++;
             const timeBonus = Math.max(0, maxBonusTime - timeTaken);
@@ -346,8 +348,9 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
             createPointPopup(totalPoints, moleRefs.current[Number(idx)], containerRef.current);
             setMoles(prev => prev.map(() => ({ up: false, content: null })));
         } else {
-            if (soundsReadyRef.current && wrongSoundRef.current) {
-                wrongSoundRef.current.triggerAttackRelease('A2', '8n');
+            if (wrongSoundRef.current) {
+                wrongSoundRef.current.currentTime = 0; // Reset về đầu
+                wrongSoundRef.current.play().catch(e => console.error('Error playing wrong sound:', e));
             }
             showFeedback('❌', 'red');
             setMoles(prev => prev.map(() => ({ up: false, content: null })));
