@@ -141,9 +141,23 @@
 }
 
 .correct {
+    animation: matched-animation 0.5s forwards;
     box-shadow: 0 0 12px 4px rgba(40, 167, 69, 0.7);
-    opacity: 0;
-    pointer-events: none;
+}
+
+@keyframes matched-animation {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(1.2) rotate(15deg);
+    }
+
+    100% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
 }
 
 /* Emoji & Word */
