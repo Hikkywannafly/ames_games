@@ -42,10 +42,10 @@ export default function useGameLogic(gameData, config) {
     )
       return;
 
-    const correctUrl = loadSound("../assets/correct");
-    const wrongUrl = loadSound("../assets/error");
-    const matchUrl = loadSound("../assets/match");
-    const finalUrl = loadSound("../assets/final");
+    const correctUrl = loadSound("../../common/sounds/matching2x5/correct");
+    const wrongUrl = loadSound("../../common/sounds/whalemole/error");
+    const matchUrl = loadSound("../../common/sounds/whalemole/match");
+    const finalUrl = loadSound("../../common/sounds/matching2x5/final");
 
     if (correctUrl) correctSoundRef.current = new Audio(correctUrl);
     if (wrongUrl) wrongSoundRef.current = new Audio(wrongUrl);
@@ -61,7 +61,7 @@ export default function useGameLogic(gameData, config) {
   const endGame = useCallback(() => {
     setIsEnded(true);
     if (timerRef.current) clearInterval(timerRef.current);
-    finalSoundRef.current?.play(); 
+    finalSoundRef.current?.play();
   }, []);
 
   const homeBack = useCallback(() => {
