@@ -365,6 +365,20 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
 
     const restartGame = useCallback(() => startGame(), [startGame]);
 
+    const backToHome = useCallback(() => {
+        setScore(0);
+        setTimeLeft(gameDuration);
+        setIsGameActive(false);
+        isGameActiveRef.current = false;
+        setGameReport(null);
+        setTargetContent(null);
+        setMoles(Array(moleCount).fill(null));
+        setPointPopups([]);
+        setFeedback({ show: false, text: "", color: "green", hammerHit: false });
+        roundIndexRef.current = 0;
+        correctAnswersRef.current = 0;
+    }, [gameDuration, moleCount]);
+
     return {
         score,
         timeLeft,
@@ -378,6 +392,7 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
         currentProgress,
         startGame,
         restartGame,
+        backToHome,
         handleMoleHit,
         setHammerPos,
     };

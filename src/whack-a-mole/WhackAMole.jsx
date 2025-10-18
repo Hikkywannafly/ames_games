@@ -13,7 +13,7 @@ export default function WhackAMole({
     const {
         score, timeLeft, targetContent, moles, hammerPos, feedback,
         isGameActive, pointPopups, gameReport, currentProgress,
-        startGame, restartGame, handleMoleHit, setHammerPos
+        startGame, restartGame, backToHome, handleMoleHit, setHammerPos
     } = useGameLogic(gameData, gameConfig);
 
     useEffect(() => {
@@ -130,7 +130,7 @@ export default function WhackAMole({
             {!isGameActive && timeLeft < gameConfig.gameDuration && gameReport && (
                 <div className={`${styles.endScreen} ${gameReport.accuracy === 100 ? styles.victory : styles.defeat}`}>
                     <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-                        {gameReport.accuracy === 100 ? "🎉 Perfect!" : "Game Over!"}
+                        {gameReport.accuracy === 100 ? "🎉 Perfect!" : "Time up!"}
                     </h1>
                     <div style={{ fontSize: "1.25rem", marginBottom: "1.5rem", textAlign: "center" }}>
                         {gameReport.accuracy === 100 ? (
@@ -164,7 +164,16 @@ export default function WhackAMole({
                             </div>
                         </div>
                     </div>
-                    <button className={styles.startButton} onClick={restartGame}>Play Again</button>
+                    <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+                        <button className={styles.startButton} onClick={restartGame}>
+                            <span className={styles.buttonText}>Play Again</span>
+
+                        </button>
+                        <button className={styles.startButton} onClick={backToHome} style={{ backgroundColor: "#5e72e4" }}>
+                            <span className={styles.buttonText}>Back to Home</span>
+                            <span className={styles.buttonIcon}>🏠</span>
+                        </button>
+                    </div>
                 </div>
             )}
 
