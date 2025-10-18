@@ -9,10 +9,7 @@ function shuffle(array) {
   return [...array].sort(() => Math.random() - 0.5);
 }
 
-export default function useGameLogic(
-  gameData,
-  config 
-) {
+export default function useGameLogic(gameData, config) {
   const [isStarted, setIsStarted] = useState(false);
   const [isEnded, setIsEnded] = useState(false);
   const [score, setScore] = useState(0);
@@ -26,10 +23,18 @@ export default function useGameLogic(
 
   const timerRef = useRef(null);
 
-  const correctSound = new Audio(correctSoundFile);
-  const wrongSound = new Audio(wrongSoundFile);
-  const matchSound = new Audio(matchSoundFile);
-  const finalSound = new Audio(finalSoundFile);
+  const correctSound = new Audio(
+    /* @vite-ignore */ new URL("../assets/correct.wav", import.meta.url)
+  );
+  const wrongSound = new Audio(
+    /* @vite-ignore */ new URL("../assets/error.wav", import.meta.url)
+  );
+  const matchSound = new Audio(
+    /* @vite-ignore */ new URL("../assets/match.wav", import.meta.url)
+  );
+  const finalSound = new Audio(
+    /* @vite-ignore */ new URL("../assets/final.ogg", import.meta.url)
+  );
 
   correctSound.volume = 0.5;
   wrongSound.volume = 0.5;
