@@ -375,7 +375,7 @@ export default function useGameLogic(gameData = DEFAULT_GAME_DATA, gameConfig = 
         setMoles(Array(moleCount).fill(null));
         setPointPopups([]);
         setFeedback({ show: false, text: "", color: "green", hammerHit: false });
-        roundIndexRef.current = 0;
+        currentQuestionIndexRef.current = 0;
         correctAnswersRef.current = 0;
     }, [gameDuration, moleCount]);
 
