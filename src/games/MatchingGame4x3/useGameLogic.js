@@ -1,18 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 
-import correctSoundFile from "../assets/correct.wav";
-import wrongSoundFile from "../assets/error.wav";
-import matchSoundFile from "../assets/match.wav";
-import finalSoundFile from "../assets/final.ogg";
+import correctSoundFile from "../../common/sounds/whalemole/correct.wav";
+import wrongSoundFile from "../../common/sounds/whalemole/error.wav";
+import matchSoundFile from "../../common/sounds/matching2x5/match.mp3";
+import finalSoundFile from "../../common/sounds/whalemole/final.ogg";
 
 function shuffle(array) {
   return [...array].sort(() => Math.random() - 0.5);
 }
 
-export default function useGameLogic(
-  gameData,
-  config 
-) {
+export default function useGameLogic(gameData, config) {
   const [isStarted, setIsStarted] = useState(false);
   const [isEnded, setIsEnded] = useState(false);
   const [score, setScore] = useState(0);

@@ -1,7 +1,7 @@
 import styles from "./MatchingGame4x3.module.css";
-import { EndGameScreen, StartGameScreen } from "../common";
+import { EndGameScreen, StartGameScreen } from "../../common";
 import useGameLogic from "./useGameLogic";
-import globalStyles from "../common/style-global.module.css";
+import globalStyles from "../../common/style-global.module.css";
 
 export default function MatchingGame4x3({ gameData, config }) {
   const {
