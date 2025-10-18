@@ -24,6 +24,15 @@ export default function useGameLogic(gameData, config) {
   const matchSoundRef = useRef(null);
   const finalSoundRef = useRef(null);
 
+  const loadSound = (basePath, exts = [".wav", ".mp3", ".ogg"]) => {
+    for (let ext of exts) {
+      try {
+        return new URL(`${basePath}${ext}`, import.meta.url).href;
+      } catch {}
+    }
+    return "";
+  };
+
   const initSounds = useCallback(() => {
     if (
       correctSoundRef.current &&
@@ -32,33 +41,27 @@ export default function useGameLogic(gameData, config) {
       finalSoundRef.current
     )
       return;
-    try {
-      correctSoundRef.current = new Audio(
-        new URL("../assets/correct.wav", import.meta.url).href
-      );
-      wrongSoundRef.current = new Audio(
-        new URL("../assets/error.wav", import.meta.url).href
-      );
-      matchSoundRef.current = new Audio(
-        new URL("../assets/match.wav", import.meta.url).href
-      );
-      finalSoundRef.current = new Audio(
-        new URL("../assets/final.ogg", import.meta.url).href
-      );
 
-      correctSoundRef.current.volume = 0.5;
-      wrongSoundRef.current.volume = 0.5;
-      matchSoundRef.current.volume = 0.6;
-      finalSoundRef.current.volume = 0.6;
-    } catch (error) {
-      console.error("Failed to load sounds:", error);
-    }
+    const correctUrl = loadSound("../assets/correct");
+    const wrongUrl = loadSound("../assets/error");
+    const matchUrl = loadSound("../assets/match");
+    const finalUrl = loadSound("../assets/final");
+
+    if (correctUrl) correctSoundRef.current = new Audio(correctUrl);
+    if (wrongUrl) wrongSoundRef.current = new Audio(wrongUrl);
+    if (matchUrl) matchSoundRef.current = new Audio(matchUrl);
+    if (finalUrl) finalSoundRef.current = new Audio(finalUrl);
+
+    if (correctSoundRef.current) correctSoundRef.current.volume = 0.5;
+    if (wrongSoundRef.current) wrongSoundRef.current.volume = 0.5;
+    if (matchSoundRef.current) matchSoundRef.current.volume = 0.6;
+    if (finalSoundRef.current) finalSoundRef.current.volume = 0.6;
   }, []);
 
   const endGame = useCallback(() => {
     setIsEnded(true);
     if (timerRef.current) clearInterval(timerRef.current);
-    finalSoundRef.current?.play();
+    finalSoundRef.current?.play(); 
   }, []);
 
   const homeBack = useCallback(() => {
@@ -118,6 +121,7 @@ export default function useGameLogic(gameData, config) {
 
       const newSelected = [...selected, index];
       setSelected(newSelected);
+
       correctSoundRef.current?.play();
 
       if (newSelected.length === 2) {
