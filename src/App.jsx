@@ -1,14 +1,12 @@
 import WhackAMole from "./whack-a-mole/WhackAMole";
-import "./App.css";
 import {
-  DEFAULT_GAME_CONFIG,
   DEFAULT_GAME_DATA,
+  DEFAULT_GAME_CONFIG,
 } from "./whack-a-mole/useGameLogic";
-// import MatchingGame4x3 from "./matching-game-4x3/MatchingGame4x3";
-// import {
-//   DEFAULT_GAME_CONFIG,
-//   DEFAULT_GAME_DATA,
-// } from "./matching-game-4x3/useGameLogic";
+import "./App.css";
+import { Route, Routes } from "react-router";
+import MatchingGame4x3 from "./MatchingGame4x3/page.jsx";
+import MatchingGame from "./MatchingGame2x5/MatchingGame.jsx";
 
 function App() {
   const handleGameEnd = (gameReport) => {
@@ -20,15 +18,25 @@ function App() {
   };
 
   return (
-    <WhackAMole
-      gameData={DEFAULT_GAME_DATA}
-      gameConfig={DEFAULT_GAME_CONFIG}
-      onGameEnd={handleGameEnd}
-    />
-    // <MatchingGame4x3
-    // config={DEFAULT_GAME_CONFIG}
-    // gameData={DEFAULT_GAME_DATA}
+    // <WhackAMole
+    //   gameData={DEFAULT_GAME_DATA}
+    //   gameConfig={DEFAULT_GAME_CONFIG}
+    //   onGameEnd={handleGameEnd}
     // />
+    <Routes>
+      <Route
+        index
+        element={
+          <WhackAMole
+            gameData={DEFAULT_GAME_DATA}
+            gameConfig={DEFAULT_GAME_CONFIG}
+            onGameEnd={handleGameEnd}
+          />
+        }
+      />
+      <Route path="matchingame2x5" element={<MatchingGame />} />
+      <Route path="matchingame4x3" element={<MatchingGame4x3 />} />
+    </Routes>
   );
 }
 

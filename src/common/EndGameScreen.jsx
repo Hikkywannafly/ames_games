@@ -1,4 +1,5 @@
-import styles from "../whack-a-mole/WhackAMole.module.css";
+// import styles from "../whack-a-mole/WhackAMole.module.css";
+import styles from "./EndGameScreen.module.css";
 import ButtonGame from "./ButtonGame";
 
 /**
@@ -21,107 +22,172 @@ import ButtonGame from "./ButtonGame";
  * @param {Object} props.buttonConfig - Button configuration
  */
 export default function EndGameScreen({
-    gameReport,
-    onPlayAgain,
-    onBackToHome,
-    customMessages = {},
-    showStats = true,
-    buttonConfig = {}
+  gameReport,
+  onPlayAgain,
+  onBackToHome,
+  customMessages = {},
+  showStats = true,
+  buttonConfig = {},
+  rank = 5,
+  modal = false,
 }) {
-    if (!gameReport) return null;
+  if (!gameReport) return null;
 
-    const {
-        finalScore,
-        totalQuestions,
-        correctAnswers,
-        accuracy,
-        timeUsed
-    } = gameReport;
+  const { finalScore, totalQuestions, correctAnswers, accuracy, timeUsed } =
+    gameReport;
 
-    const isPerfect = accuracy === 100;
+  const isPerfect = accuracy === 100;
 
-    const messages = {
-        victoryTitle: customMessages.victoryTitle || "🎉 Perfect!",
-        victoryMessage: customMessages.victoryMessage || "Congratulations! You got them all correct! 🏆",
-        defeatTitle: customMessages.defeatTitle || "Time up!",
-        defeatMessage: customMessages.defeatMessage || "Good try! Keep practicing and you'll do even better! 💪✨"
-    };
+  const messages = {
+    victoryTitle: customMessages.victoryTitle || "🎉 Perfect!",
+    victoryMessage:
+      customMessages.victoryMessage ||
+      "Congratulations! You got them all correct! 🏆",
+    defeatTitle: customMessages.defeatTitle || "Time up!",
+    defeatMessage:
+      customMessages.defeatMessage ||
+      "Good try! Keep practicing and you'll do even better! 💪✨",
+  };
 
-    const buttons = {
-        playAgain: {
-            text: buttonConfig.playAgainText || "Play Again",
-            icon: buttonConfig.playAgainIcon || "🔄",
-            show: buttonConfig.showPlayAgain !== false
-        },
-        backToHome: {
-            text: buttonConfig.backToHomeText || "Back to Home",
-            icon: buttonConfig.backToHomeIcon || "🏠",
-            show: buttonConfig.showBackToHome !== false
-        }
-    };
+  const buttons = {
+    playAgain: {
+      text: buttonConfig.playAgainText || "Play Again",
+      icon: buttonConfig.playAgainIcon || "🔄",
+      show: buttonConfig.showPlayAgain !== false,
+    },
+    backToHome: {
+      text: buttonConfig.backToHomeText || "Back to Home",
+      icon: buttonConfig.backToHomeIcon || "🏠",
+      show: buttonConfig.showBackToHome !== false,
+    },
+  };
 
-    return (
-        <div className={`${styles.endScreen} ${isPerfect ? styles.victory : styles.defeat}`}>
-            <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-                {isPerfect ? messages.victoryTitle : messages.defeatTitle}
-            </h1>
-            <div style={{ fontSize: "1.25rem", marginBottom: "1.5rem", textAlign: "center" }}>
-                {isPerfect ? (
-                    <p style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#FFD700" }}>
-                        {messages.victoryMessage}
-                    </p>
-                ) : (
-                    <p style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#FFA726" }}>
-                        {messages.defeatMessage}
-                    </p>
-                )}
-                <p style={{ fontSize: "1.875rem", marginBottom: "1rem" }}>
-                    Final score: <span style={{
-                        color: isPerfect ? "#FFD700" : "#FFA726",
-                        fontWeight: "bold"
-                    }}>{finalScore}</span>
+  return (
+    <div
+      className={
+        `${styles.endScreen} ${isPerfect ? styles.victory : styles.defeat}` +
+        (modal ? ` ${styles.modal}` : "")
+      }
+    >
+      <h1
+        // style={{ fontSize: "3rem", marginBottom: "1rem" }}
+        className={`${modal ? styles.modalTitle : styles.endScreenTitle}`}
+      >
+        {isPerfect ? messages.victoryTitle : messages.defeatTitle}
+      </h1>
+      <div
+        // style={{
+        //   fontSize: "1.25rem",
+        //   marginBottom: "1.5rem",
+        //   textAlign: "center",
+        // }}
+        className={` ${modal ? styles.modalContent : styles.endScreenContent}`}
+      >
+        {isPerfect ? (
+          <p
+            // style={{
+            //   fontSize: "1.5rem",
+            //   marginBottom: "1rem",
+            //   color: "#FFD700",
+            // }}
+            className={`${
+              modal
+                ? styles.modalContentTextVictory
+                : styles.endScreenContentTextVictory
+            }`}
+          >
+            {messages.victoryMessage}
+          </p>
+        ) : (
+          <p
+            // style={{
+            //   fontSize: "1.5rem",
+            //   marginBottom: "1rem",
+            //   color: "#FFA726",
+            // }}
+            className={`${
+              modal
+                ? styles.modalContentTextDefeat
+                : styles.endScreenContentTextDefeat
+            }`}
+          >
+            {messages.defeatMessage}
+          </p>
+        )}
+        <p
+          className={`${
+            modal
+              ? styles.modalContentFinalScoreText
+              : styles.endScreenContentFinalScoreText
+          }`}
+        >
+          Final score:{" "}
+          <span
+            style={{
+              color: isPerfect ? "#FFD700" : "#FFA726",
+              fontWeight: "bold",
+            }}
+          >
+            {finalScore}
+          </span>
+        </p>
+
+        {showStats && (
+          <div
+            className={`${modal ? styles.modalStatsGrid : styles.statsGrid}`}
+          >
+            <div className={styles.statColumn1}>
+              <div className={styles.statItem}>
+                <p className={styles.statLabel}>Progress:</p>
+                <p className={styles.statValue}>
+                  {totalQuestions}/{correctAnswers}
                 </p>
-
-                {showStats && (
-                    <div className={styles.statsGrid}>
-                        <div className={styles.statItem}>
-                            <p className={styles.statLabel}>Questions:</p>
-                            <p className={styles.statValue}>{totalQuestions}</p>
-                        </div>
-                        <div className={styles.statItem}>
-                            <p className={styles.statLabel}>Correct:</p>
-                            <p className={styles.statValue}>{correctAnswers}</p>
-                        </div>
-                        <div className={styles.statItem}>
-                            <p className={styles.statLabel}>Accuracy:</p>
-                            <p className={styles.statValue}>{accuracy}%</p>
-                        </div>
-                        <div className={styles.statItem}>
-                            <p className={styles.statLabel}>Time:</p>
-                            <p className={styles.statValue}>{timeUsed}s</p>
-                        </div>
-                    </div>
-                )}
+              </div>
+              <div className={styles.statItem}>
+                <p className={styles.statLabel}>Rank:</p>
+                <p className={styles.statValue}>{rank}</p>
+              </div>
             </div>
-
-            <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-                {buttons.playAgain.show && onPlayAgain && (
-                    <ButtonGame
-                        onClick={onPlayAgain}
-                        text={buttons.playAgain.text}
-                        // icon={buttons.playAgain.icon}
-                        variant="primary"
-                    />
-                )}
-                {buttons.backToHome.show && onBackToHome && (
-                    <ButtonGame
-                        onClick={onBackToHome}
-                        text={buttons.backToHome.text}
-                        icon={buttons.backToHome.icon}
-                        variant="primary"
-                    />
-                )}
+            <div className={styles.statColumn2}>
+              <div className={styles.statItem}>
+                <p className={styles.statLabel}>Time:</p>
+                <p className={styles.statValue}>{timeUsed}s</p>
+              </div>
             </div>
-        </div>
-    );
+          </div>
+        )}
+      </div>
+
+      <div
+        // style={{
+        //   display: "flex",
+        //   gap: "1rem",
+        //   justifyContent: "center",
+        //   flexWrap: "wrap",
+        // }}
+        className={`${modal ? styles.modalButtons : styles.endScreenButtons}`}
+      >
+        {buttons.playAgain.show && onPlayAgain && (
+          <ButtonGame
+            onClick={onPlayAgain}
+            text={buttons.playAgain.text}
+            // icon={buttons.playAgain.icon}
+            variant="primary"
+            className={styles.playAgainButton}
+            modal={modal}
+          />
+        )}
+        {buttons.backToHome.show && onBackToHome && (
+          <ButtonGame
+            onClick={onBackToHome}
+            text={buttons.backToHome.text}
+            icon={buttons.backToHome.icon}
+            variant="primary"
+            className={styles.backToHomeButton}
+            modal={modal}
+          />
+        )}
+      </div>
+    </div>
+  );
 }
