@@ -1,6 +1,7 @@
 import WhackAMole from './whack-a-mole/WhackAMole'
-import { DEFAULT_GAME_DATA, DEFAULT_GAME_CONFIG } from './whack-a-mole/useGameLogic'
 import './App.css'
+import MatchingGame4x3 from './matching-game-4x3/MatchingGame4x3';
+import { DEFAULT_GAME_CONFIG, DEFAULT_GAME_DATA } from './matching-game-4x3/useGameLogic';
 
 function App() {
   const handleGameEnd = (gameReport) => {
@@ -10,10 +11,14 @@ function App() {
   };
 
   return (
-    <WhackAMole
-      gameData={DEFAULT_GAME_DATA}
-      gameConfig={DEFAULT_GAME_CONFIG}
-      onGameEnd={handleGameEnd}
+    // <WhackAMole
+    //   gameData={DEFAULT_GAME_DATA}
+    //   gameConfig={DEFAULT_GAME_CONFIG}
+    //   onGameEnd={handleGameEnd}
+    // />
+    <MatchingGame4x3 
+    config={DEFAULT_GAME_CONFIG}
+    gameData={DEFAULT_GAME_DATA}
     />
   );
 }
