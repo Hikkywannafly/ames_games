@@ -4,9 +4,9 @@ import Header from "./Header";
 import GameOverlay from "./GameOverlay";
 import GameBoard from "./GameBoard";
 import styles from "./MatchingGame.module.css";
-import globalStyles from "../common/style-global.module.css";
-import { shuffleArray } from "../helpers/shuffle";
-import { masterItems } from "../mocks/data";
+import globalStyles from "../../common/style-global.module.css";
+import { shuffleArray } from "../../helpers/shuffle";
+import { masterItems } from "../../mocks/data";
 // Import sound files - supports both .mp3 and .wav formats
 // Sound files are located in src/common/sounds/matching2x5
 let selectSfx = "";
@@ -16,13 +16,13 @@ let errorSfx = "";
 try {
   // Try .wav first, fallback to .mp3
   selectSfx = new URL(
-    "../common/sounds/matching2x5/select.wav",
+    "../../common/sounds/matching2x5/select.wav",
     import.meta.url
   ).href;
 } catch {
   try {
     selectSfx = new URL(
-      "../common/sounds/matching2x5/select.mp3",
+      "../../common/sounds/matching2x5/select.mp3",
       import.meta.url
     ).href;
   } catch {
@@ -31,12 +31,14 @@ try {
 }
 
 try {
-  matchSfx = new URL("../common/sounds/matching2x5/match.mp3", import.meta.url)
-    .href;
+  matchSfx = new URL(
+    "../../common/sounds/matching2x5/match.mp3",
+    import.meta.url
+  ).href;
 } catch {
   try {
     matchSfx = new URL(
-      "../common/sounds/matching2x5/match.wav",
+      "../../common/sounds/matching2x5/match.wav",
       import.meta.url
     ).href;
   } catch {
@@ -46,12 +48,14 @@ try {
 
 try {
   // Try .wav first, fallback to .mp3
-  errorSfx = new URL("../common/sounds/matching2x5/error.wav", import.meta.url)
-    .href;
+  errorSfx = new URL(
+    "../../common/sounds/matching2x5/error.wav",
+    import.meta.url
+  ).href;
 } catch {
   try {
     errorSfx = new URL(
-      "../common/sounds/matching2x5/error.mp3",
+      "../../common/sounds/matching2x5/error.mp3",
       import.meta.url
     ).href;
   } catch {

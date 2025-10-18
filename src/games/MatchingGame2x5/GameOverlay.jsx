@@ -1,4 +1,4 @@
-import { EndGameScreen, StartGameScreen } from "../common";
+import { EndGameScreen, StartGameScreen } from "../../common";
 import styles from "./MatchingGame.module.css";
 
 /**

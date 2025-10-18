@@ -1,12 +1,12 @@
-import WhackAMole from "./whack-a-mole/WhackAMole";
+import WhackAMole from "./games/whack-a-mole/WhackAMole";
 import {
   DEFAULT_GAME_DATA,
   DEFAULT_GAME_CONFIG,
-} from "./whack-a-mole/useGameLogic";
+} from "./games/whack-a-mole/useGameLogic";
 import "./App.css";
 import { Route, Routes } from "react-router";
-import MatchingGame4x3 from "./MatchingGame4x3/page.jsx";
-import MatchingGame from "./MatchingGame2x5/MatchingGame.jsx";
+import MatchingGame4x3 from "./games/MatchingGame4x3/page.jsx";
+import MatchingGame from "./games/MatchingGame2x5/MatchingGame.jsx";
 
 function App() {
   const handleGameEnd = (gameReport) => {
