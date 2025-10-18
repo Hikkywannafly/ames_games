@@ -1,0 +1,92 @@
+.startButton {
+  padding: 18px 40px;
+  font-size: 28px;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 20px;
+  box-shadow: 0 8px 0 #e69100, 0 12px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.startButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 0 #e69100, 0 14px 25px rgba(0, 0, 0, 0.4);
+}
+
+.startButton:active {
+  transform: translateY(8px);
+  box-shadow: 0 0 0 #e69100, 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.startButton.modalStartButton {
+  padding: 0.7rem 1rem;
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.buttonText {
+  font-size: 28px;
+}
+
+.buttonText.buttonTextModal {
+  font-size: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.buttonIcon {
+  font-size: 32px;
+  animation: rocket 1.5s ease-in-out infinite;
+}
+
+.buttonIcon.buttonIconModal {
+  font-size: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .startButton.modalStartButton {
+    padding: 0.7rem 1rem;
+    margin-top: 0.5rem;
+  }
+}
+@media (max-width: 768px) {
+  .startButton.modalStartButton {
+    padding: 0.25rem 1rem;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .startButton.modalStartButton {
+    padding: 0rem;
+    margin-top: 0.125rem;
+  }
+  .buttonTextModal {
+    font-size: 0.75rem;
+  }
+
+  .buttonIconModal {
+    font-size: 0.75rem;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}

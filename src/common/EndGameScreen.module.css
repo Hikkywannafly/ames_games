@@ -1,0 +1,333 @@
+.endScreen {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  z-index: 200;
+  text-align: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.victory {
+  animation: victoryPulse 0.6s ease-in-out;
+  background: rgba(76, 175, 80, 0.8) !important;
+  /* Green background for victory */
+}
+
+.victory::before {
+  content: "🎊";
+  position: absolute;
+  font-size: 80px;
+  animation: confettiLeft 2s ease-out infinite;
+  left: 10%;
+  top: 20%;
+}
+
+.victory::after {
+  content: "🎉";
+  position: absolute;
+  font-size: 80px;
+  animation: confettiRight 2s ease-out infinite;
+  right: 10%;
+  top: 20%;
+}
+
+@keyframes victoryPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes confettiLeft {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(400px) rotate(-180deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confettiRight {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(400px) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+/* Defeat animation - sad shake */
+.defeat {
+  animation: sadShake 0.5s ease-in-out;
+  background: rgba(255, 87, 34, 0.75) !important;
+  /* Orange-red background for defeat */
+}
+
+.defeat::before {
+  content: "😢";
+  position: absolute;
+  font-size: 60px;
+  animation: tearDrop 2s ease-in infinite;
+  left: 20%;
+  top: 30%;
+}
+
+.defeat::after {
+  content: "😢";
+  position: absolute;
+  font-size: 60px;
+  animation: tearDrop 2s ease-in infinite 0.5s;
+  right: 20%;
+  top: 30%;
+}
+
+@keyframes sadShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-10px);
+  }
+
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+@keyframes tearDrop {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(300px);
+    opacity: 0;
+  }
+}
+
+.modal {
+  border-radius: 1rem;
+}
+
+.modalTitle {
+  font-size: 1.875rem;
+}
+
+.modalTitle,
+.modalContent,
+.modalContentTextVictory {
+  margin: 0rem 0rem 0.875rem 0rem;
+}
+
+.endScreenTitle {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.modalContent {
+  /* font-size: 1.25rem; */
+  /* margin-bottom: 1.5rem; */
+  text-align: center;
+}
+
+.endScreenContent {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modalContentTextVictory {
+  font-size: 1.125rem;
+  color: #ffd700;
+}
+
+.endScreenContentTextVictory {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #ffd700;
+}
+
+.modalContentTextDefeat {
+  font-size: 1.125rem;
+  color: #ffa726;
+}
+
+.modalContentFinalScoreText {
+  font-size: 1.875rem;
+  margin: 0rem 0rem 0.875rem 0rem;
+}
+
+.endScreenContentTextDefeat {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #ffa726;
+}
+
+.endScreenContentFinalScoreText {
+  font-size: 1.875rem;
+  margin-bottom: 1rem;
+}
+
+.modalStatsGrid {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 auto 1rem auto;
+  width: 100%;
+  max-width: 400px;
+}
+
+.statColumn1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.statItem {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.75rem;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  margin: 0 0 0.25rem 0;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  margin: 0;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+.modalButtons {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+}
+
+.endScreenButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .modalTitle {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .modalTitle,
+  .modalContent,
+  .modalContentTextVictory {
+    margin: 0rem 0rem 0.25rem 0rem;
+  }
+
+  .modalContentFinalScoreText {
+    font-size: 1rem;
+  }
+
+  .modalStatsGrid .statValue,
+  .modalStatsGrid .statValue {
+    font-size: 0.875rem;
+    margin: 0;
+    font-weight: bold;
+    color: #ffd700;
+  }
+
+  .statsGrid {
+    max-width: 500px;
+    gap: 1rem;
+  }
+
+  .modalButtons {
+    gap: 0.5rem;
+  }
+}
+@media (max-width: 400px) {
+  .modalStatsGrid .statValue {
+    font-size: 1rem;
+  }
+
+  .statsGrid {
+    gap: 0.5rem;
+  }
+
+  .statItem {
+    padding: 0.5rem;
+  }
+
+  .statLabel {
+    font-size: 0.75rem;
+  }
+
+  .statValue {
+    font-size: 1.25rem;
+  }
+
+  .modalButtons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 320px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .statItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .statLabel,
+  .statValue {
+    margin: 0;
+  }
+
+  .modalButtons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
