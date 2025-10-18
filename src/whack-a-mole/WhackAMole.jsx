@@ -1,6 +1,7 @@
 import { useEffect, useRef, memo } from "react";
 import styles from "./WhackAMole.module.css";
 import useGameLogic, { DEFAULT_GAME_CONFIG, DEFAULT_GAME_DATA } from "./useGameLogic";
+import { StartGameScreen, EndGameScreen } from "../common/";
 
 export default function WhackAMole({
     gameData = DEFAULT_GAME_DATA,
@@ -96,7 +97,7 @@ export default function WhackAMole({
         );
     });
 
-    const rows = [[0, 1], [2, 3]];
+    // const rows = [[0, 1], [2, 3]];
 
     return (
         <div
@@ -107,74 +108,24 @@ export default function WhackAMole({
             aria-label="Whack-a-Quiz Game"
         >
             {!isGameActive && timeLeft === gameConfig.gameDuration && (
-                <div className={styles.startScreen}>
-                    <div className={styles.floatingMole1}>🦫</div>
-                    <div className={styles.floatingMole2}>🦫</div>
-                    <div className={styles.floatingMole3}>🦫</div>
-                    <div className={styles.floatingMole4}>🦫</div>
-                    <div className={styles.titleContainer}>
-                        <h1 className={styles.gameTitle}>Whack-a-Quiz!</h1>
-                        <div className={styles.titleUnderline}></div>
-                    </div>
-                    <p className={styles.gameDescription}>
-                        Hit the mole with the correct answer<br />
-                        Be quick for more points!
-                    </p>
-                    <button className={styles.startButton} onClick={startGame}>
-                        <span className={styles.buttonText}>Start Game</span>
-                        <span className={styles.buttonIcon}>🚀</span>
-                    </button>
-                </div>
+                <StartGameScreen
+                    onStartGame={startGame}
+                    title="Whack-a-Quiz!"
+                    description="Hit the mole with the correct answer
+Be quick for more points!"
+                    buttonText="Start Game"
+                    buttonIcon="🚀"
+                    showFloatingMoles={true}
+                    floatingEmoji="🦫"
+                />
             )}
 
             {!isGameActive && timeLeft < gameConfig.gameDuration && gameReport && (
-                <div className={`${styles.endScreen} ${gameReport.accuracy === 100 ? styles.victory : styles.defeat}`}>
-                    <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-                        {gameReport.accuracy === 100 ? "🎉 Perfect!" : "Time up!"}
-                    </h1>
-                    <div style={{ fontSize: "1.25rem", marginBottom: "1.5rem", textAlign: "center" }}>
-                        {gameReport.accuracy === 100 ? (
-                            <p style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#FFD700" }}>
-                                Congratulations! You got them all correct! 🏆
-                            </p>
-                        ) : (
-                            <p style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#FFA726" }}>
-                                Good try! Keep practicing and you'll do even better! 💪✨
-                            </p>
-                        )}
-                        <p style={{ fontSize: "1.875rem", marginBottom: "1rem" }}>
-                            Final score: <span style={{ color: gameReport.accuracy === 100 ? "#FFD700" : "#FFA726", fontWeight: "bold" }}>{gameReport.finalScore}</span>
-                        </p>
-                        <div className={styles.statsGrid}>
-                            <div className={styles.statItem}>
-                                <p className={styles.statLabel}>Questions:</p>
-                                <p className={styles.statValue}>{gameReport.totalQuestions}</p>
-                            </div>
-                            <div className={styles.statItem}>
-                                <p className={styles.statLabel}>Correct:</p>
-                                <p className={styles.statValue}>{gameReport.correctAnswers}</p>
-                            </div>
-                            <div className={styles.statItem}>
-                                <p className={styles.statLabel}>Accuracy:</p>
-                                <p className={styles.statValue}>{gameReport.accuracy}%</p>
-                            </div>
-                            <div className={styles.statItem}>
-                                <p className={styles.statLabel}>Time:</p>
-                                <p className={styles.statValue}>{gameReport.timeUsed}s</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-                        <button className={styles.startButton} onClick={restartGame}>
-                            <span className={styles.buttonText}>Play Again</span>
-
-                        </button>
-                        <button className={styles.startButton} onClick={backToHome} style={{ backgroundColor: "#5e72e4" }}>
-                            <span className={styles.buttonText}>Back to Home</span>
-                            <span className={styles.buttonIcon}>🏠</span>
-                        </button>
-                    </div>
-                </div>
+                <EndGameScreen
+                    gameReport={gameReport}
+                    onPlayAgain={restartGame}
+                    onBackToHome={backToHome}
+                />
             )}
 
             {isGameActive && (
