@@ -1,9 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-
-import correctSoundFile from "../assets/correct.wav";
-import wrongSoundFile from "../assets/error.wav";
-import matchSoundFile from "../assets/match.wav";
-import finalSoundFile from "../assets/final.ogg";
+import { useCallback, useState, useEffect, useRef } from "react";
 
 function shuffle(array) {
   return [...array].sort(() => Math.random() - 0.5);
@@ -23,30 +18,50 @@ export default function useGameLogic(gameData, config) {
 
   const timerRef = useRef(null);
 
-  const correctSound = new Audio(
-    /* @vite-ignore */ new URL("../assets/correct.wav", import.meta.url)
-  );
-  const wrongSound = new Audio(
-    /* @vite-ignore */ new URL("../assets/error.wav", import.meta.url)
-  );
-  const matchSound = new Audio(
-    /* @vite-ignore */ new URL("../assets/match.wav", import.meta.url)
-  );
-  const finalSound = new Audio(
-    /* @vite-ignore */ new URL("../assets/final.ogg", import.meta.url)
-  );
+  // Audio refs
+  const correctSoundRef = useRef(null);
+  const wrongSoundRef = useRef(null);
+  const matchSoundRef = useRef(null);
+  const finalSoundRef = useRef(null);
 
-  correctSound.volume = 0.5;
-  wrongSound.volume = 0.5;
-  matchSound.volume = 0.5;
-  finalSound.volume = 0.6;
+  const initSounds = useCallback(() => {
+    if (
+      correctSoundRef.current &&
+      wrongSoundRef.current &&
+      matchSoundRef.current &&
+      finalSoundRef.current
+    )
+      return;
+    try {
+      correctSoundRef.current = new Audio(
+        new URL("../assets/correct.wav", import.meta.url).href
+      );
+      wrongSoundRef.current = new Audio(
+        new URL("../assets/error.wav", import.meta.url).href
+      );
+      matchSoundRef.current = new Audio(
+        new URL("../assets/match.wav", import.meta.url).href
+      );
+      finalSoundRef.current = new Audio(
+        new URL("../assets/final.ogg", import.meta.url).href
+      );
 
-  const endGame = () => {
+      correctSoundRef.current.volume = 0.5;
+      wrongSoundRef.current.volume = 0.5;
+      matchSoundRef.current.volume = 0.6;
+      finalSoundRef.current.volume = 0.6;
+    } catch (error) {
+      console.error("Failed to load sounds:", error);
+    }
+  }, []);
+
+  const endGame = useCallback(() => {
     setIsEnded(true);
     if (timerRef.current) clearInterval(timerRef.current);
-  };
+    finalSoundRef.current?.play();
+  }, []);
 
-  const homeBack = () => {
+  const homeBack = useCallback(() => {
     setIsStarted(false);
     setIsEnded(false);
     setBoard([]);
@@ -57,9 +72,11 @@ export default function useGameLogic(gameData, config) {
     setScore(0);
     setMoves(0);
     setTimeLeft(config.totalTime);
-  };
+  }, [config.totalTime]);
 
-  const startGame = () => {
+  const startGame = useCallback(() => {
+    initSounds();
+
     const shuffled = shuffle(gameData);
     const first6 = shuffled.slice(0, 6);
     const rest = shuffled.slice(6);
@@ -92,54 +109,60 @@ export default function useGameLogic(gameData, config) {
         return prev - 1;
       });
     }, 1000);
-  };
+  }, [gameData, config.totalTime, endGame, initSounds]);
 
-  const handleSelect = (index) => {
-    if (!isStarted) return;
-    if (selected.includes(index)) return;
+  const handleSelect = useCallback(
+    (index) => {
+      if (!isStarted) return;
+      if (selected.includes(index)) return;
 
-    const newSelected = [...selected, index];
-    setSelected(newSelected);
-    correctSound.play();
+      const newSelected = [...selected, index];
+      setSelected(newSelected);
+      correctSoundRef.current?.play();
 
-    if (newSelected.length === 2) {
-      setMoves((prev) => prev + 1);
-      const [a, b] = newSelected;
+      if (newSelected.length === 2) {
+        setMoves((prev) => prev + 1);
+        const [a, b] = newSelected;
 
-      if (board[a].pair === board[b].pair && board[a].type !== board[b].type) {
-        matchSound.play();
-        setCorrectPair([a, b]);
+        if (
+          board[a].pair === board[b].pair &&
+          board[a].type !== board[b].type
+        ) {
+          matchSoundRef.current?.play();
+          setCorrectPair([a, b]);
 
-        setTimeout(() => {
-          setScore((prev) => prev + 1);
-          let newBoard = board.filter((_, i) => i !== a && i !== b);
+          setTimeout(() => {
+            setScore((prev) => prev + 1);
+            let newBoard = board.filter((_, i) => i !== a && i !== b);
 
-          if (queue.length > 0) {
-            const [next, ...restQueue] = queue;
-            const newPair = [
-              { type: "image", image: next.image, pair: next.text },
-              { type: "word", word: next.text, pair: next.text },
-            ];
-            newBoard = shuffle([...newBoard, ...newPair]);
-            setQueue(restQueue);
-          }
+            if (queue.length > 0) {
+              const [next, ...restQueue] = queue;
+              const newPair = [
+                { type: "image", image: next.image, pair: next.text },
+                { type: "word", word: next.text, pair: next.text },
+              ];
+              newBoard = shuffle([...newBoard, ...newPair]);
+              setQueue(restQueue);
+            }
 
-          setBoard(newBoard);
-          setSelected([]);
-          setCorrectPair([]);
+            setBoard(newBoard);
+            setSelected([]);
+            setCorrectPair([]);
 
-          if (newBoard.length === 0) endGame();
-        }, 600);
-      } else {
-        wrongSound.play();
-        setWrongPair(newSelected);
-        setTimeout(() => {
-          setWrongPair([]);
-          setSelected([]);
-        }, 600);
+            if (newBoard.length === 0) endGame();
+          }, 600);
+        } else {
+          wrongSoundRef.current?.play();
+          setWrongPair(newSelected);
+          setTimeout(() => {
+            setWrongPair([]);
+            setSelected([]);
+          }, 600);
+        }
       }
-    }
-  };
+    },
+    [board, isStarted, queue, selected, endGame]
+  );
 
   useEffect(() => {
     return () => {
