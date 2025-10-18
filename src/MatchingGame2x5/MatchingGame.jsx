@@ -8,27 +8,37 @@ import globalStyles from "../common/style-global.module.css";
 import { shuffleArray } from "../helpers/shuffle";
 import { masterItems } from "../mocks/data";
 // Import sound files - supports both .mp3 and .wav formats
-// Sound files are located in src/assets/sounds/
+// Sound files are located in src/common/sounds/matching2x5
 let selectSfx = "";
 let matchSfx = "";
 let errorSfx = "";
 
 try {
   // Try .wav first, fallback to .mp3
-  selectSfx = new URL("../../assets/sounds/select.wav", import.meta.url).href;
+  selectSfx = new URL(
+    "../common/sounds/matching2x5/select.wav",
+    import.meta.url
+  ).href;
 } catch {
   try {
-    selectSfx = new URL("../../assets/sounds/select.mp3", import.meta.url).href;
+    selectSfx = new URL(
+      "../common/sounds/matching2x5/select.mp3",
+      import.meta.url
+    ).href;
   } catch {
     selectSfx = "";
   }
 }
 
 try {
-  matchSfx = new URL("../../assets/sounds/match.mp3", import.meta.url).href;
+  matchSfx = new URL("../common/sounds/matching2x5/match.mp3", import.meta.url)
+    .href;
 } catch {
   try {
-    matchSfx = new URL("../../assets/sounds/match.wav", import.meta.url).href;
+    matchSfx = new URL(
+      "../common/sounds/matching2x5/match.wav",
+      import.meta.url
+    ).href;
   } catch {
     matchSfx = "";
   }
@@ -36,10 +46,14 @@ try {
 
 try {
   // Try .wav first, fallback to .mp3
-  errorSfx = new URL("../../assets/sounds/error.wav", import.meta.url).href;
+  errorSfx = new URL("../common/sounds/matching2x5/error.wav", import.meta.url)
+    .href;
 } catch {
   try {
-    errorSfx = new URL("../../assets/sounds/error.mp3", import.meta.url).href;
+    errorSfx = new URL(
+      "../common/sounds/matching2x5/error.mp3",
+      import.meta.url
+    ).href;
   } catch {
     errorSfx = "";
   }
