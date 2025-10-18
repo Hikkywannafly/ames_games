@@ -1,0 +1,9 @@
+.backgroundBase {
+  background: linear-gradient(
+    to bottom,
+    #87ceeb 0%,
+    #a2d2ff 50%,
+    #5c9e31 50%,
+    #6aaf3a 100%
+  );
+}

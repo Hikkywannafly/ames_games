@@ -1,0 +1,1307 @@
+/* ===================================
+   Matching Game CSS Module
+   - All styles scoped to component
+   - Responsive design (mobile-first)
+   - Smooth animations
+   - Accessibility support
+   
+   BREAKPOINTS:
+   - Mobile:   0-767px (base styles)
+   - Tablet:   768px-1023px
+   - Desktop:  1024px-1439px
+   - Large:    1440px+
+   =================================== */
+
+/* @import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap"); */
+
+/* ===================================
+   Container & Layout
+   =================================== */
+
+.gameContainer {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  /* Mobile: full viewport with safe area */
+  min-height: 100dvh; /* dynamic viewport height for mobile */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background: #dbeafe;  */
+  padding: 0.5rem; /* reduced for mobile */
+  box-sizing: border-box;
+  font-family: "Fredoka One", cursive, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  /* Prevent overscroll on mobile */
+  overscroll-behavior: contain;
+  /* background: linear-gradient(
+    to bottom,
+    #87ceeb 0%,
+    #a2d2ff 50%,
+    #5c9e31 50%,
+    #6aaf3a 100%
+  ); */
+}
+
+/* White modal card for game content */
+.gameContent {
+  position: relative;
+  width: 100%;
+  max-width: 672px; /* max-w-2xl */
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  border-radius: 0.75rem; /* slightly smaller on mobile */
+  padding: 0.75rem; /* reduced for mobile */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* reduced gap for mobile */
+  max-height: 95vh; /* more room on mobile */
+  max-height: 95dvh; /* dynamic viewport */
+  overflow: hidden; /* prevent scrolling issues */
+}
+
+.startGame,
+.endGame {
+  position: relative;
+  width: 100%;
+  max-width: 672px; /* max-w-2xl */
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  border-radius: 0.75rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 95vh;
+  max-height: 95dvh;
+  padding: 0.75rem;
+}
+
+/* ===================================
+   Overlay (Start & End Screens)
+   =================================== */
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9); /* white/90 like reference */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  border-radius: 0.75rem; /* matches gameContent border radius */
+  transition: opacity 0.5s ease-in-out;
+  padding: 2rem;
+}
+
+.overlayContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.overlayHeader {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  justify-content: start;
+  padding: 0.5rem 0 2.5rem 0; /* mobile-first: smaller padding */
+}
+
+.modalTitle {
+  font-size: 1.5rem; /* mobile-first */
+  color: #eab308; /* yellow-500 */
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.title {
+  font-size: 1.5rem; /* mobile-first */
+  color: #2563eb; /* blue-600 */
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 1rem; /* mobile-first */
+  color: #4b5563; /* gray-600 */
+  margin: 0.5rem 0 0 0;
+  line-height: 1.4;
+}
+
+.replayButton,
+.startButton {
+  /* background: #22c55e; */
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: white;
+  border: none;
+  /* Mobile-first: bigger touch target */
+  padding: 0.875rem 1.75rem;
+  min-height: 48px; /* accessible touch target */
+  min-width: 150px;
+  font-size: 1.125rem; /* smaller on mobile */
+  /* font-weight: 600; */
+  font-weight: bold;
+  border-radius: 9999px; /* fully rounded */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  /* box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  box-shadow: 0 8px 0 #e69100, 0 12px 20px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  bottom: -24px; /* reduced for mobile */
+  left: 50%;
+  transform: translateX(-50%);
+  /* Prevent tap highlight on mobile */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; /* prevent zoom on double-tap */
+}
+
+/* Hover effects (desktop only) */
+@media (hover: hover) and (pointer: fine) {
+  .replayButton:hover,
+  .startButton:hover {
+    /* background: #16a34a; */
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 10px 0 #e69100, 0 14px 25px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Active state (touch feedback) */
+.replayButton:active,
+.startButton:active {
+  transform: translateX(-50%) scale(0.95);
+  /* background: #15803d;  */
+  /* transform: translateY(0px); */
+  box-shadow: 0 0 0 #e69100, 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.gameOverTitle {
+  /* font-size: 2.25rem; */
+  font-size: 3rem;
+  margin: 0 0 1rem 0;
+  /* color: #eab308; */
+  color: white;
+  font-weight: bold;
+}
+
+.finalScore {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #4b5563; /* gray-600 */
+  margin: 0 0 1.5rem 0;
+}
+
+/* ===================================
+   Header (Score & Timer)
+   =================================== */
+
+.header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #eff6ff; /* blue-50 */
+  padding: 0.5rem; /* reduced for mobile */
+  border-radius: 0.5rem;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  flex-shrink: 0; /* prevent header from shrinking */
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.scoreDisplay,
+.timerDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem; /* smaller on mobile */
+  font-weight: 700;
+  white-space: nowrap; /* prevent wrapping */
+}
+
+.timerDisplay {
+  color: #374151; /* gray-700 */
+}
+
+.timerDisplay .label {
+  color: #eab308; /* yellow-500 */
+}
+
+.scoreDisplay {
+  color: #374151; /* gray-700 */
+}
+
+.scoreDisplay .label {
+  color: #22c55e; /* green-500 */
+}
+
+.value {
+  color: #333;
+  font-size: 1.125rem; /* mobile-first */
+  font-weight: 700;
+  min-width: 40px; /* smaller on mobile */
+  text-align: right;
+}
+
+/* Header Back Button */
+.headerBackButton {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 0 #1d4ed8, 0 6px 10px rgba(0, 0, 0, 0.2);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  white-space: nowrap;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .headerBackButton:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 0 #1d4ed8, 0 8px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.headerBackButton:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 0 #1d4ed8, 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.headerBackButton:focus-visible {
+  outline: 3px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+/* ===================================
+   Game Board
+   =================================== */
+
+.gameBoardContainer {
+  position: relative;
+  flex: 1;
+  display: flex;
+  min-height: 150px;
+  align-items: center;
+  justify-content: center;
+}
+
+.gameBoard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem; /* smaller gap on mobile */
+  flex: 1;
+  width: 100%;
+}
+
+/* ===================================
+   Card Grids
+   =================================== */
+
+.gridImages,
+.gridWords {
+  display: grid;
+  grid-template-rows: repeat(5, 1fr); /* 5 equal rows */
+  gap: 0.5rem; /* smaller gap on mobile */
+}
+
+/* ===================================
+   Cards
+   =================================== */
+
+.card {
+  background: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  width: 100%; /* Fill grid cell */
+  height: 100%; /* Fill grid cell */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out,
+    background-color 0.2s, opacity 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  user-select: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1f2937; /* gray-800 */
+  /* Mobile touch optimization */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  /* GPU acceleration for better performance */
+  will-change: transform;
+  /* transform: translateZ(0); */
+
+  /* test */
+  transform: scale(1) opacity(1);
+}
+
+/* Hover effects (desktop only) */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover:not(:disabled) {
+    transform: scale(1.05) translateZ(0); /* Combine transforms */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.card:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Image card container styles */
+.cardImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Image element inside card */
+.cardImageElement {
+  width: 100%;
+  height: 100%;
+  max-width: 40px; /* mobile base - smaller to fit in flex */
+  max-height: 40px;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+  /* Performance optimization for image loading */
+  will-change: auto; /* Reset will-change when not animating */
+  image-rendering: -webkit-optimize-contrast; /* Faster rendering */
+}
+
+.word {
+  font-family: "Fredoka One", cursive, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+/* Word cards */
+.cardWord .word {
+  font-size: 0.75rem; /* mobile base - smaller to fit in flex */
+  font-weight: 600;
+  text-align: center;
+  color: #1f2937; /* gray-800 */
+  word-break: break-word;
+  hyphens: auto;
+  line-height: 1.2;
+}
+
+/* ===================================
+   Card States & Animations
+   =================================== */
+
+/* Selected state */
+.card.selected {
+  background: #60a5fa; /* blue-400 */
+  color: white;
+  transform: scale(1.05) translateZ(0); /* Combine transforms */
+  box-shadow: 0 0 0 3px #3b82f6; /* blue-500 */
+  z-index: 1; /* bring to front */
+}
+
+.card.selected .word {
+  color: white;
+}
+
+/* Matched state */
+
+@keyframes fadeInScale {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* .card.matched {
+  background: #4ade80;
+  color: white;
+  transform: scale(0) translateZ(0);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.45s ease-in-out, background-color 0.3s ease;
+  pointer-events: none;
+  cursor: default;
+} */
+
+.card.matched {
+  background: #4ade80; /* green-400 */
+  transform: scale(0.8);
+  /* opacity: 1; */
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.45s ease-in-out, background-color 0.3s ease;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* .card.last {
+  background: #4ade80;
+  transform: scale(1);
+  opacity: 0.8;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.45s ease-in-out, background-color 0.3s ease;
+  pointer-events: none;
+  cursor: default;
+} */
+@keyframes fadeToLast {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+}
+
+.card.last {
+  background: #4ade80; /* green-400 */
+  animation: fadeToLast 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+  cursor: default;
+  will-change: transform, opacity;
+}
+
+.card.last,
+.card.matched .word {
+  color: white;
+}
+
+/* Error state */
+.card.error {
+  background: #f87171; /* red-400 */
+  animation: shake 0.4s ease-in-out; /* faster on mobile */
+}
+
+/* Replacing state (fade out) */
+/* Fade out (replacing) */
+/* .card.replacing {
+  transform: scale(0) translateZ(0);
+  opacity: 0;
+  transition: transform 0.35s ease-in, opacity 0.35s ease-in;
+  pointer-events: none;
+}
+
+.card.entering {
+  transform: scale(1);
+  opacity: 1;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.45s ease-out;
+  pointer-events: none;
+} */
+.card.replacing {
+  transform: scale(0) translateZ(0);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Short transition for cleanup */
+}
+
+/* Change entering to use keyframe for better event handling */
+.card.entering {
+  animation: fadeInScale 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Reuse your existing keyframe, but make it match the transition curve */
+@keyframes fadeInScale {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ===================================
+   Keyframe Animations
+   =================================== */
+
+/* Used when new cards fade in after a match */
+
+/* Used when cards don't match (shake animation) */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-8px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(8px);
+  }
+}
+
+/* Used for floating score display */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-80px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* ===================================
+   Floating Score Display
+   =================================== */
+
+.floatingScore {
+  position: absolute;
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 700;
+  color: #16a34a; /* green-600 */
+  pointer-events: none;
+  z-index: 999;
+  animation: floatUp 1.5s ease-out forwards;
+}
+
+/* ===================================
+   Accessibility
+   =================================== */
+
+.card:focus-visible {
+  outline: 3px solid #667eea;
+  outline-offset: 3px;
+}
+
+.startButton:focus-visible,
+.replayButton:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 3px;
+}
+
+/* ===================================
+   Game Over Overlay (Dimmed on Game Board)
+   =================================== */
+
+.gameOverOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* background: rgba(255, 255, 255, 0.7); */
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  border-radius: 0.75rem;
+  animation: fadeIn 0.3s ease-out;
+
+  /* background: #ff5722bf; */
+}
+
+.gameOverContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* gap: 0.5rem;  */
+  gap: 0.25rem;
+  padding: 0.75rem; /* mobile: minimal padding */
+  text-align: center;
+  max-width: 95%;
+}
+
+.gameOverHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.partyEmoji {
+  font-size: 1.25rem; /* mobile: smaller */
+}
+
+.gameOverTitle {
+  font-size: 1rem; /* mobile: much smaller */
+  font-weight: 700;
+  /* color: #ef4444;  */
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* .gameOverTitle.win {
+  color: #22c55e;
+} */
+/* .gameOverTitle.lose {
+  color: #ef4444;
+} */
+
+.gameOverMessage {
+  font-size: 0.875rem; /* mobile-first */
+  color: #374151; /* gray-700 */
+  margin: 0;
+  line-height: 1.5;
+}
+
+.matchedText {
+  color: #2563eb; /* blue-600 */
+  font-weight: 700;
+}
+
+.finalScoreText {
+  display: block;
+  margin-top: 0.5rem;
+  color: #374151; /* gray-700 */
+}
+
+.playAgainButton {
+  /* background: #22c55e;  */
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem; /* mobile: smaller */
+  min-height: 44px; /* accessible touch target */
+  min-width: 120px;
+  font-size: 0.875rem; /* mobile: smaller */
+  /* font-weight: 700; */
+  font-weight: bold;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 0 #e69100, 0 12px 20px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .playAgainButton:hover {
+    /* background: #16a34a;  */
+    transform: scale(1.05);
+    box-shadow: 0 10px 0 #e69100, 0 14px 25px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.resultSuggestion {
+  font-size: 1rem;
+  color: rgb(255, 167, 38);
+}
+
+.playAgainButton:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 0 #e69100, 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Group for End Screen */
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 280px;
+  margin-top: 0.5rem;
+}
+
+/* Back to Home Button */
+.backToHomeButton {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  min-height: 44px;
+  min-width: 120px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 0 #1d4ed8, 0 12px 20px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .backToHomeButton:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 0 #1d4ed8, 0 14px 25px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.backToHomeButton:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 0 #1d4ed8, 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Stats Container */
+.statsContainer {
+  /* display: flex;
+  flex-direction: column;
+  gap: 0.375rem; 
+  width: 100%;
+  max-width: 280px; */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem; /* mobile: tight gap */
+  width: 100%;
+  max-width: 400px;
+}
+
+.matchedStats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* gap: 0.125rem; 
+  padding: 0.5rem;  */
+  /* background: rgba(59, 130, 246, 0.1);  */
+  /* border-radius: 0.375rem; */
+  /* border: 1.5px solid #3b82f6;  */
+  border-radius: 12px;
+  background: #ffffff1a;
+  padding: 0.25rem;
+  gap: 0.25rem;
+}
+
+.matchedLabel {
+  /* font-size: 0.625rem; 
+  color: white; 
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em; */
+  color: white;
+  font-size: 0.875rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.matchedValue {
+  /* font-size: 1rem; */
+  color: gold;
+  line-height: 1;
+  opacity: 0.9;
+  font-weight: 500;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.scoreStats {
+  display: flex;
+  gap: 0.25rem;
+  /* flex-direction: column;
+  align-items: center; */
+  /* gap: 0.25rem; 
+  padding: 0.5rem; */
+  /* background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.1) 0%,
+    rgba(59, 130, 246, 0.1) 100%
+  ); */
+  /* border-radius: 0.375rem;
+  border: 1.5px solid #22c55e;  */
+}
+
+.scoreLabel {
+  /* font-size: 0.625rem;  */
+  /* color: #15803d;  */
+  font-weight: 600;
+  /* text-transform: uppercase; */
+  letter-spacing: 0.025em;
+  /* font-size: 1.875rem; */
+  font-size: 1.25rem;
+  /* margin-bottom: 1rem; */
+  color: white;
+}
+
+.scoreComparison {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem; /* smaller gap */
+  font-weight: 700;
+}
+
+.userScore {
+  /* font-size: 1.5rem; 
+  color: #22c55e;  */
+  /* line-height: 1; */
+  color: rgb(255, 167, 38);
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.scoreDivider {
+  font-size: 0.875rem; /* mobile: smaller */
+  color: #6b7280; /* gray-500 */
+  font-weight: 400;
+}
+
+.maxScore {
+  font-size: 0.875rem; /* mobile: smaller */
+  color: #6b7280; /* gray-500 */
+  line-height: 1;
+}
+
+.scorePercentage {
+  font-size: 0.75rem; /* mobile: smaller */
+  color: #059669; /* green-600 */
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  background: rgba(34, 197, 94, 0.2);
+  border-radius: 9999px;
+}
+
+/* ===================================
+   RESPONSIVE STYLES
+   =================================== */
+
+/* Tablet: 768px and up */
+@media (min-width: 768px) {
+  .gameContainer {
+    padding: 1rem;
+  }
+
+  .gameContent,
+  .startGame,
+  .endGame {
+    padding: 1.5rem;
+    gap: 1rem;
+    border-radius: 1rem;
+  }
+
+  .overlayHeader {
+    padding: 0.625rem 0 2.75rem 0;
+  }
+
+  .modalTitle,
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    margin: 0.75rem 0 0 0;
+  }
+
+  .replayButton,
+  .startButton {
+    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    bottom: -32px;
+  }
+
+  .header {
+    /* padding: 0.5rem; */
+    border-radius: 0.75rem;
+  }
+
+  .scoreDisplay,
+  .timerDisplay {
+    font-size: 1.125rem;
+  }
+
+  .value {
+    font-size: 1.5rem;
+    min-width: 60px;
+  }
+
+  .headerBackButton {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    min-height: 40px;
+  }
+
+  .gameBoard {
+    gap: 1rem;
+  }
+
+  .gridImages,
+  .gridWords {
+    gap: 0.75rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.75rem;
+  }
+
+  .cardImageElement {
+    max-width: 50px;
+    max-height: 50px;
+  }
+
+  .cardWord .word {
+    font-size: 0.875rem;
+  }
+
+  .card.selected {
+    transform: scale(1.1) translateZ(0);
+    box-shadow: 0 0 0 4px #3b82f6;
+  }
+
+  .card.matched {
+    transform: scale(0.9) translateZ(0);
+  }
+
+  .card.error {
+    animation: shake 0.5s;
+  }
+
+  .gameOverContent {
+    /* gap: 0.75rem; */
+    gap: 0.5rem;
+    padding: 1.25rem;
+  }
+
+  /* .gameOverHeader {
+    gap: 1rem;
+  } */
+
+  .resultSuggestion {
+    font-size: 1.25rem;
+  }
+
+  .partyEmoji {
+    font-size: 1.75rem;
+  }
+
+  .gameOverTitle {
+    font-size: 1.5rem;
+  }
+
+  .gameOverMessage {
+    font-size: 1rem;
+  }
+
+  .playAgainButton {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    min-height: 48px;
+    min-width: 140px;
+  }
+
+  .buttonGroup {
+    flex-direction: row;
+    gap: 0.75rem;
+    max-width: 100%;
+    justify-content: center;
+  }
+
+  .backToHomeButton {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    min-height: 48px;
+    min-width: 140px;
+  }
+
+  .statsContainer {
+    gap: 0.5rem;
+    max-width: 350px;
+  }
+
+  .matchedStats {
+    gap: 0.5rem;
+    padding: 0.5rem 4rem;
+    border-width: 2px;
+    border-radius: 0.625rem;
+  }
+
+  .matchedLabel {
+    font-size: 0.75rem;
+  }
+  .scoreLabel {
+    font-size: 1.5rem;
+  }
+
+  .matchedValue {
+    font-size: 1.5rem;
+  }
+
+  .scoreStats {
+    gap: 0.5rem;
+    /* padding: 0.75rem; */
+    border-width: 2px;
+    border-radius: 0.625rem;
+  }
+
+  /* .userScore {
+    font-size: 2rem;
+  } */
+  .userScore {
+    font-size: 1.5rem;
+  }
+
+  .scoreDivider,
+  .maxScore {
+    font-size: 1.125rem;
+  }
+
+  .scorePercentage {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+  }
+}
+
+/* Desktop: 1024px and up */
+@media (min-width: 1024px) {
+  .modalTitle {
+    font-size: 2.25rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 1.5rem;
+    margin: 1rem 0 0 0;
+  }
+
+  .scoreDisplay,
+  .timerDisplay {
+    font-size: 1.25rem;
+  }
+
+  .headerBackButton {
+    padding: 0.625rem 1.25rem;
+    font-size: 1rem;
+    min-height: 44px;
+  }
+
+  .gameBoard {
+    gap: 1.5rem;
+  }
+
+  /* .gridImages,
+  .gridWords {
+    gap: 1rem;
+  } */
+
+  .card {
+    padding: 0.5rem;
+    /* font-size: 1rem; */
+  }
+
+  .cardImageElement {
+    max-width: 60px;
+    max-height: 60px;
+  }
+
+  .cardWord .word {
+    font-size: 1rem;
+  }
+
+  .gameOverContent {
+    gap: 0.75rem;
+    /* padding: 1.75rem; */
+    max-width: 90%;
+  }
+
+  /* .gameOverHeader {
+    gap: 1.25rem;
+  } */
+
+  .partyEmoji {
+    font-size: 2rem;
+  }
+
+  .gameOverTitle {
+    font-size: 2rem;
+  }
+
+  .gameOverMessage {
+    font-size: 1.125rem;
+    line-height: 1.75;
+  }
+
+  .playAgainButton {
+    padding: 0.875rem 1.75rem;
+    font-size: 1.125rem;
+  }
+
+  .backToHomeButton {
+    padding: 0.875rem 1.75rem;
+    font-size: 1.125rem;
+  }
+
+  .buttonGroup {
+    gap: 1rem;
+  }
+
+  .statsContainer {
+    gap: 0.75rem;
+    max-width: 400px;
+  }
+
+  .matchedStats {
+    /* gap: 0.5rem; */
+    /* padding: 1rem; */
+    border-radius: 0.75rem;
+  }
+
+  .matchedLabel {
+    font-size: 0.875rem;
+  }
+  /* .scoreLabel {
+    font-size: 1.875rem;
+  } */
+
+  /* .matchedValue {
+    font-size: 2rem;
+  } */
+
+  .scoreStats {
+    /* gap: 0.75rem; */
+    /* padding: 1.5rem; */
+    border-radius: 0.75rem;
+  }
+
+  /* .userScore {
+    font-size: 3rem;
+  } */
+
+  .scoreDivider,
+  .maxScore {
+    font-size: 2rem;
+  }
+
+  .scorePercentage {
+    font-size: 1rem;
+    padding: 0.375rem 1rem;
+  }
+}
+
+/* Large Desktop: 1440px+ */
+@media (min-width: 1440px) {
+  .gameContent,
+  .startGame,
+  .endGame {
+    max-width: 800px; /* slightly larger on big screens */
+    gap: 1rem; /* increase gap between header and game board */
+  }
+
+  .gameBoard {
+    gap: 1.5rem; /* keep same as 1024px - don't increase */
+  }
+
+  .gridImages,
+  .gridWords {
+    gap: 1rem; /* keep same as 1024px - don't increase */
+  }
+
+  .card {
+    padding: 1rem; /* keep same as 1024px - don't increase */
+  }
+
+  .cardImageElement {
+    max-width: 60px; /* keep same as 1024px - don't increase */
+    max-height: 60px;
+  }
+
+  .cardWord .word {
+    font-size: 1rem; /* keep same as 1024px - don't increase */
+  }
+}
+
+/* ===================================
+   Specialized Media Queries
+   =================================== */
+
+/* High DPI Displays (Retina) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .cardImageElement {
+    image-rendering: auto; /* use high-quality rendering */
+  }
+
+  .card {
+    /* Smoother shadows on retina */
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.08),
+      0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card {
+    border-width: 4px;
+  }
+
+  .card.selected {
+    border-width: 5px;
+  }
+}
+
+/* Reduced Motion (Accessibility) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .card {
+    transition: background-color 0.2s, opacity 0.2s;
+  }
+
+  .card:hover:not(:disabled),
+  .card.selected,
+  .card.matched {
+    transform: none;
+  }
+}
+
+/* Print Styles (hide interactive elements) */
+@media print {
+  .overlay,
+  .header,
+  .floatingScore,
+  .gameOverOverlay {
+    display: none;
+  }
+
+  .gameContainer {
+    background: white;
+  }
+}

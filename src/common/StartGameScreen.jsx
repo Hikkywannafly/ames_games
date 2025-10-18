@@ -1,4 +1,5 @@
-import styles from "../whack-a-mole/WhackAMole.module.css";
+// import styles from "../whack-a-mole/WhackAMole.module.css";
+import styles from "./StartGameScreen.module.css";
 import ButtonGame from "./ButtonGame";
 
 /**
@@ -13,42 +14,42 @@ import ButtonGame from "./ButtonGame";
  * @param {string} props.floatingEmoji - Emoji for floating decorations (default: "🦫")
  */
 export default function StartGameScreen({
-    onStartGame,
-    title = "Whack-a-Quiz!",
-    description = "Hit the mole with the correct answer\nBe quick for more points!",
-    buttonText = "Start Game",
-    buttonIcon = "🚀",
-    showFloatingMoles = true,
-    floatingEmoji = "🦫"
+  onStartGame,
+  title = "Whack-a-Quiz!",
+  description = "Hit the mole with the correct answer\nBe quick for more points!",
+  buttonText = "Start Game",
+  buttonIcon = "🚀",
+  showFloatingMoles = true,
+  floatingEmoji = "🦫",
 }) {
-    return (
-        <div className={styles.startScreen}>
-            {showFloatingMoles && (
-                <>
-                    <div className={styles.floatingMole1}>{floatingEmoji}</div>
-                    <div className={styles.floatingMole2}>{floatingEmoji}</div>
-                    <div className={styles.floatingMole3}>{floatingEmoji}</div>
-                    <div className={styles.floatingMole4}>{floatingEmoji}</div>
-                </>
-            )}
-            <div className={styles.titleContainer}>
-                <h1 className={styles.gameTitle}>{title}</h1>
-                <div className={styles.titleUnderline}></div>
-            </div>
-            <p className={styles.gameDescription}>
-                {description.split('\n').map((line, index) => (
-                    <span key={index}>
-                        {line}
-                        {index < description.split('\n').length - 1 && <br />}
-                    </span>
-                ))}
-            </p>
-            <ButtonGame
-                onClick={onStartGame}
-                text={buttonText}
-                icon={buttonIcon}
-                variant="primary"
-            />
-        </div>
-    );
+  return (
+    <div className={styles.startScreen}>
+      {showFloatingMoles && (
+        <>
+          <div className={styles.floatingMole1}>{floatingEmoji}</div>
+          <div className={styles.floatingMole2}>{floatingEmoji}</div>
+          <div className={styles.floatingMole3}>{floatingEmoji}</div>
+          <div className={styles.floatingMole4}>{floatingEmoji}</div>
+        </>
+      )}
+      <div className={styles.titleContainer}>
+        <h1 className={styles.gameTitle}>{title}</h1>
+        <div className={styles.titleUnderline}></div>
+      </div>
+      <p className={styles.gameDescription}>
+        {description.split("\n").map((line, index) => (
+          <span key={index}>
+            {line}
+            {index < description.split("\n").length - 1 && <br />}
+          </span>
+        ))}
+      </p>
+      <ButtonGame
+        onClick={onStartGame}
+        text={buttonText}
+        icon={buttonIcon}
+        variant="primary"
+      />
+    </div>
+  );
 }

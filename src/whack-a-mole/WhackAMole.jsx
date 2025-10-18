@@ -5,6 +5,7 @@ import useGameLogic, {
   DEFAULT_GAME_DATA,
 } from "./useGameLogic";
 import { StartGameScreen, EndGameScreen } from "../common/";
+import globalStyles from "../common/style-global.module.css";
 
 export default function WhackAMole({
   gameData = DEFAULT_GAME_DATA,
@@ -149,7 +150,8 @@ export default function WhackAMole({
   return (
     <div
       ref={containerRef}
-      className={styles.gameContainer}
+      // className={styles.gameContainer}
+      className={`${styles.gameContainer} ${globalStyles.backgroundBase}`}
       onClick={(e) => {
         e.preventDefault();
         handleMoleHit(e, moleRefs, containerRef);
