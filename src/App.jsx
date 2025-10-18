@@ -35,7 +35,15 @@ function App() {
         }
       />
       <Route path="matchingame2x5" element={<MatchingGame />} />
-      <Route path="matchingame4x3" element={<MatchingGame4x3 />} />
+      <Route
+        path="matchingame4x3"
+        element={
+          <MatchingGame4x3
+            gameData={DEFAULT_GAME_DATA_MATCHING_4x3}
+            config={DEFAULT_GAME_CONFIG_MATCHING_4x3}
+          />
+        }
+      />
     </Routes>
   );
 }
