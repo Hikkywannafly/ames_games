@@ -61,7 +61,7 @@ export default function MatchingGame4x3({ gameData, config }) {
                     <img
                       src={card.image}
                       alt={card.pair}
-                      className={styles.imageCard} 
+                      className={styles.imageCard}
                     />
                   ) : (
                     <span className={styles.word}>{card.word}</span>
