@@ -617,6 +617,20 @@ export default function MatchingGame({
         <GameOverlay type="start" title={title} onStart={initializeGame} />
       )}
 
+      {gameState === "finished" && (
+        <GameOverlay
+          type="end"
+          score={score}
+          maxScore={data.length * 50}
+          matchedPairs={matchedPairsCount}
+          totalPairs={data.length}
+          isWin={isWin}
+          onStart={initializeGame}
+          timeFinished={timerLength - timer}
+          onBackToHome={handleBackToHome}
+        />
+      )}
+
       {gameState !== "idle" && (
         <>
           <div className={styles.gameContent}>
@@ -639,7 +653,7 @@ export default function MatchingGame({
             {/* Game Board Container with relative positioning for overlay */}
             <div className={styles.gameBoardContainer}>
               {/* Game Over Overlay - shows inside game board */}
-              {gameState === "finished" && (
+              {/* {gameState === "finished" && (
                 <GameOverlay
                   type="end"
                   score={score}
@@ -651,7 +665,7 @@ export default function MatchingGame({
                   timeFinished={timerLength - timer}
                   onBackToHome={handleBackToHome}
                 />
-              )}
+              )} */}
 
               {/* Game Board - always visible to show behind overlay */}
               <GameBoard
