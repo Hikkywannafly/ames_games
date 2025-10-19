@@ -22,7 +22,13 @@ export default function MatchingGame4x3({ gameData, config }) {
   return (
     <div className={`${globalStyles.backgroundBase} ${styles.gameContainer}`}>
       {!isStarted ? (
-        <StartGameScreen title="Match-a-Roo!" onStartGame={startGame} />
+        <StartGameScreen
+          title="Match-a-Roo!"
+          description="Match the cards with the correct pairs! 
+          Be quick to earn more points!"
+          onStartGame={startGame}
+          floatingEmoji=""
+        />
       ) : (
         <>
           <h1 className={styles.title}>Match-a-Roo!</h1>
@@ -89,12 +95,6 @@ export default function MatchingGame4x3({ gameData, config }) {
                 defeatMessage: "Don't worry, try again! 💪",
               }}
               showStats={true}
-              buttonConfig={{
-                playAgainText: "Again",
-                backToHomeText: "Home",
-                showPlayAgain: true,
-                showBackToHome: true,
-              }}
             />
           )}
         </>
