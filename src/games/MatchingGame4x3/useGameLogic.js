@@ -5,15 +5,9 @@ function shuffle(array) {
   return [...array].sort(() => Math.random() - 0.5);
 }
 
-// Load sound with fallback .wav -> .mp3 -> .ogg
-const loadSound = (basePath, exts = [".wav", ".mp3", ".ogg"]) => {
-  for (let ext of exts) {
-    try {
-      return new URL(`${basePath}${ext}`, import.meta.url).href;
-    } catch {}
-  }
-  return "";
-};
+// NOTE:
+// Avoid dynamic asset resolution in production; Vite needs static paths
+// so it can fingerprint and serve them correctly on Vercel.
 
 export default function useGameLogic(gameData, config) {
   const [isStarted, setIsStarted] = useState(false);
@@ -29,24 +23,54 @@ export default function useGameLogic(gameData, config) {
 
   const timerRef = useRef(null);
   const soundEnabledRef = useRef(false);
-  // Load sound URLs
-  const selectUrl = loadSound("../../common/sounds/matching2x5/select");
-  const correctUrl = loadSound("../../common/sounds/whalemole/correct");
-  const matchUrl = loadSound("../../common/sounds/matching4x3/match");
-  const finalUrl = loadSound("../../common/sounds/matching2x5/final");
-  const errorUrl = loadSound("../../common/sounds/whalemole/error");
+
+  const selectUrl = new URL(
+    "../../common/sounds/matching2x5/select.wav",
+    import.meta.url
+  ).href;
+  const correctUrl = new URL(
+    "../../common/sounds/whalemole/correct.wav",
+    import.meta.url
+  ).href;
+  const matchUrl = new URL(
+    "../../common/sounds/matching4x3/match.wav",
+    import.meta.url
+  ).href;
+  const finalUrl = new URL(
+    "../../common/sounds/whalemole/final.ogg",
+    import.meta.url
+  ).href;
+  const errorUrl = new URL(
+    "../../common/sounds/whalemole/error.wav",
+    import.meta.url
+  ).href;
 
   // useSound hooks
-  const [playSelect] = useSound(selectUrl || "", { volume: 0.5, soundEnabled: soundEnabledRef.current });
-  const [playCorrect] = useSound(correctUrl || "", { volume: 0.5, soundEnabled: soundEnabledRef.current });
-  const [playMatch] = useSound(matchUrl || "", { volume: 0.6, soundEnabled: soundEnabledRef.current });
-  const [playFinal] = useSound(finalUrl || "", { volume: 0.6, soundEnabled: soundEnabledRef.current });
-  const [playWrong] = useSound(errorUrl || "", { volume: 0.5, soundEnabled: soundEnabledRef.current });
+  const [playSelect] = useSound(selectUrl || "", {
+    volume: 0.5,
+    soundEnabled: soundEnabledRef.current,
+  });
+  const [playCorrect] = useSound(correctUrl || "", {
+    volume: 0.5,
+    soundEnabled: soundEnabledRef.current,
+  });
+  const [playMatch] = useSound(matchUrl || "", {
+    volume: 0.6,
+    soundEnabled: soundEnabledRef.current,
+  });
+  const [playFinal] = useSound(finalUrl || "", {
+    volume: 0.6,
+    soundEnabled: soundEnabledRef.current,
+  });
+  const [playWrong] = useSound(errorUrl || "", {
+    volume: 0.5,
+    soundEnabled: soundEnabledRef.current,
+  });
 
   const endGame = useCallback(() => {
     setIsEnded(true);
     if (timerRef.current) clearInterval(timerRef.current);
-    soundEnabledRef.current = true; 
+    soundEnabledRef.current = true;
     playFinal();
   }, [playFinal]);
 
@@ -104,7 +128,7 @@ export default function useGameLogic(gameData, config) {
     (index) => {
       if (!isStarted || selected.includes(index)) return;
 
-      soundEnabledRef.current = true; 
+      soundEnabledRef.current = true;
       const newSelected = [...selected, index];
       setSelected(newSelected);
       playSelect();
@@ -113,7 +137,10 @@ export default function useGameLogic(gameData, config) {
         setMoves((prev) => prev + 1);
         const [a, b] = newSelected;
 
-        if (board[a].pair === board[b].pair && board[a].type !== board[b].type) {
+        if (
+          board[a].pair === board[b].pair &&
+          board[a].type !== board[b].type
+        ) {
           playMatch();
           setCorrectPair([a, b]);
 
@@ -149,7 +176,17 @@ export default function useGameLogic(gameData, config) {
         }
       }
     },
-    [board, isStarted, queue, selected, endGame, playCorrect, playMatch, playSelect, playWrong]
+    [
+      board,
+      isStarted,
+      queue,
+      selected,
+      endGame,
+      playCorrect,
+      playMatch,
+      playSelect,
+      playWrong,
+    ]
   );
 
   useEffect(() => {
