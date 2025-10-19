@@ -38,6 +38,7 @@
 }
 
 @keyframes victoryPulse {
+
   0%,
   100% {
     transform: scale(1);
@@ -98,6 +99,7 @@
 }
 
 @keyframes sadShake {
+
   0%,
   100% {
     transform: translateX(0);
@@ -214,6 +216,14 @@
   width: 100%;
 }
 
+.statColumn2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
 .statItem {
   background: rgba(255, 255, 255, 0.1);
   padding: 0.75rem;
@@ -289,9 +299,96 @@
     gap: 0.5rem;
   }
 }
+
+@media (max-width: 375px) {
+  .endScreen {
+    padding: 10px;
+  }
+
+  .endScreenTitle {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .endScreenContent {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .endScreenContentTextVictory,
+  .endScreenContentTextDefeat {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .endScreenContentFinalScoreText {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .statsGrid {
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    max-width: 100%;
+  }
+
+  .statItem {
+    padding: 0.5rem;
+  }
+
+  .statLabel {
+    font-size: 0.75rem;
+  }
+
+  .statValue {
+    font-size: 1rem;
+  }
+
+  .endScreenButtons {
+    gap: 0.5rem;
+    width: 100%;
+  }
+}
+
 @media (max-width: 400px) {
   .modalStatsGrid .statValue {
     font-size: 1rem;
+  }
+
+  .modalTitle {
+    font-size: 1.125rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .modalContent {
+    font-size: 0.875rem;
+  }
+
+  .modalContentTextVictory,
+  .modalContentTextDefeat {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .modalContentFinalScoreText {
+    font-size: 1rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .modalStatsGrid {
+    gap: 0.5rem;
+  }
+
+  .modalStatsGrid .statItem {
+    padding: 0.375rem;
+  }
+
+  .modalStatsGrid .statLabel {
+    font-size: 0.75rem;
+  }
+
+  .modalStatsGrid .statValue {
+    font-size: 0.875rem;
   }
 
   .statsGrid {
@@ -313,10 +410,42 @@
   .modalButtons {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 0.375rem;
+    width: 100%;
   }
 }
 
 @media (max-width: 320px) {
+  .modalTitle {
+    font-size: 1rem;
+  }
+
+  .modalContentFinalScoreText {
+    font-size: 0.875rem;
+  }
+
+  .modalStatsGrid {
+    grid-template-columns: 1fr;
+    gap: 0.375rem;
+  }
+
+  .modalStatsGrid .statColumn1 {
+    grid-template-columns: 1fr;
+    gap: 0.375rem;
+  }
+
+  .modalStatsGrid .statItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.375rem 0.5rem;
+  }
+
+  .modalStatsGrid .statLabel,
+  .modalStatsGrid .statValue {
+    margin: 0;
+  }
+
   .statsGrid {
     grid-template-columns: 1fr;
     gap: 0.5rem;
@@ -336,5 +465,6 @@
   .modalButtons {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 0.375rem;
   }
 }

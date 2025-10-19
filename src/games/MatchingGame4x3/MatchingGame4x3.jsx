@@ -27,7 +27,6 @@ export default function MatchingGame4x3({ gameData, config }) {
           description="Match the cards with the correct pairs! 
           Be quick to earn more points!"
           onStartGame={startGame}
-          floatingEmoji=""
         />
       ) : (
         <>
@@ -88,12 +87,6 @@ export default function MatchingGame4x3({ gameData, config }) {
               }}
               onPlayAgain={startGame}
               onBackToHome={homeBack}
-              customMessages={{
-                victoryTitle: "🎉 Awesome!",
-                victoryMessage: "You nailed all pairs! 🏆",
-                defeatTitle: "⏰ Time's Up!",
-                defeatMessage: "Don't worry, try again! 💪",
-              }}
               showStats={true}
             />
           )}

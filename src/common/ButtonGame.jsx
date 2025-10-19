@@ -45,24 +45,21 @@ export default function ButtonGame({
 
   return (
     <button
-      className={`${styles.startButton} ${className} ${
-        modal ? styles.modalStartButton : ""
-      }`}
+      className={`${styles.startButton} ${className} ${modal ? styles.modalStartButton : ""
+        }`}
       onClick={onClick}
       style={combinedStyle}
     >
       <span
-        className={`${styles.buttonText} ${
-          modal ? styles.buttonTextModal : ""
-        }`}
+        className={`${styles.buttonText} ${modal ? styles.buttonTextModal : ""
+          }`}
       >
         {text}
       </span>
       {icon && (
         <span
-          className={`${styles.buttonIcon} ${
-            modal ? styles.buttonIconModal : ""
-          }`}
+          className={`${styles.buttonIcon} ${modal ? styles.buttonIconModal : ""
+            }`}
         >
           {icon}
         </span>

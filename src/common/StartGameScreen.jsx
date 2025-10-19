@@ -19,19 +19,11 @@ export default function StartGameScreen({
   description = "Hit the mole with the correct answer\nBe quick for more points!",
   buttonText = "Start Game",
   buttonIcon = "🚀",
-  showFloatingMoles = true,
-  floatingEmoji = "🦫",
+
 }) {
   return (
     <div className={styles.startScreen}>
-      {showFloatingMoles && (
-        <>
-          <div className={styles.floatingMole1}>{floatingEmoji}</div>
-          <div className={styles.floatingMole2}>{floatingEmoji}</div>
-          <div className={styles.floatingMole3}>{floatingEmoji}</div>
-          <div className={styles.floatingMole4}>{floatingEmoji}</div>
-        </>
-      )}
+
       <div className={styles.titleContainer}>
         <h1 className={styles.gameTitle}>{title}</h1>
         <div className={styles.titleUnderline}></div>

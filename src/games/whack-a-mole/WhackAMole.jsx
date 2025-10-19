@@ -167,8 +167,6 @@ export default function WhackAMole({
 Be quick for more points!"
           buttonText="Start Game"
           buttonIcon="🚀"
-          showFloatingMoles={true}
-          floatingEmoji="🦫"
         />
       )}
 
