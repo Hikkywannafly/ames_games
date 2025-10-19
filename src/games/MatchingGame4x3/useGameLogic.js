@@ -1,10 +1,11 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import useSound from "use-sound";
 
 function shuffle(array) {
   return [...array].sort(() => Math.random() - 0.5);
 }
 
+// Load sound with fallback .wav -> .mp3 -> .ogg
 const loadSound = (basePath, exts = [".wav", ".mp3", ".ogg"]) => {
   for (let ext of exts) {
     try {
@@ -26,8 +27,8 @@ export default function useGameLogic(gameData, config) {
   const [correctPair, setCorrectPair] = useState([]);
   const [queue, setQueue] = useState([]);
 
-  let timerRef = null;
-
+  const timerRef = useRef(null);
+  const soundEnabledRef = useRef(false);
   // Load sound URLs
   const selectUrl = loadSound("../../common/sounds/matching2x5/select");
   const correctUrl = loadSound("../../common/sounds/whalemole/correct");
@@ -36,15 +37,16 @@ export default function useGameLogic(gameData, config) {
   const errorUrl = loadSound("../../common/sounds/whalemole/error");
 
   // useSound hooks
-  const [playSelect] = useSound(selectUrl, { volume: 0.5 });
-  const [playCorrect] = useSound(correctUrl, { volume: 0.5 });
-  const [playMatch] = useSound(matchUrl, { volume: 0.6 });
-  const [playFinal] = useSound(finalUrl, { volume: 0.6 });
-  const [playWrong] = useSound(errorUrl, { volume: 0.5 });
+  const [playSelect] = useSound(selectUrl || "", { volume: 0.5, soundEnabled: soundEnabledRef.current });
+  const [playCorrect] = useSound(correctUrl || "", { volume: 0.5, soundEnabled: soundEnabledRef.current });
+  const [playMatch] = useSound(matchUrl || "", { volume: 0.6, soundEnabled: soundEnabledRef.current });
+  const [playFinal] = useSound(finalUrl || "", { volume: 0.6, soundEnabled: soundEnabledRef.current });
+  const [playWrong] = useSound(errorUrl || "", { volume: 0.5, soundEnabled: soundEnabledRef.current });
 
   const endGame = useCallback(() => {
     setIsEnded(true);
-    if (timerRef) clearInterval(timerRef);
+    if (timerRef.current) clearInterval(timerRef.current);
+    soundEnabledRef.current = true; 
     playFinal();
   }, [playFinal]);
 
@@ -84,8 +86,8 @@ export default function useGameLogic(gameData, config) {
     setIsStarted(true);
     setIsEnded(false);
 
-    if (timerRef) clearInterval(timerRef);
-    timerRef = setInterval(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           endGame();
@@ -94,12 +96,15 @@ export default function useGameLogic(gameData, config) {
         return prev - 1;
       });
     }, 1000);
+
+    soundEnabledRef.current = true;
   }, [gameData, config.totalTime, endGame]);
 
   const handleSelect = useCallback(
     (index) => {
       if (!isStarted || selected.includes(index)) return;
 
+      soundEnabledRef.current = true; 
       const newSelected = [...selected, index];
       setSelected(newSelected);
       playSelect();
@@ -149,7 +154,7 @@ export default function useGameLogic(gameData, config) {
 
   useEffect(() => {
     return () => {
-      if (timerRef) clearInterval(timerRef);
+      if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);
 
