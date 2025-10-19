@@ -217,13 +217,16 @@ export default function useGameLogic(
       return;
     try {
       correctSoundRef.current = new Audio(
-        new URL("../common/sounds/whalemole/correct.wav", import.meta.url).href
+        new URL(
+          "../../common/sounds/whalemole/correct.wav",
+          import.meta.url
+        ).href
       );
       wrongSoundRef.current = new Audio(
-        new URL("../common/sounds/whalemole/error.wav", import.meta.url).href
+        new URL("../../common/sounds/whalemole/error.wav", import.meta.url).href
       );
       finalSoundRef.current = new Audio(
-        new URL("../common/sounds/whalemole/final.ogg", import.meta.url).href
+        new URL("../../common/sounds/whalemole/final.ogg", import.meta.url).href
       );
 
       correctSoundRef.current.volume = 0.5;

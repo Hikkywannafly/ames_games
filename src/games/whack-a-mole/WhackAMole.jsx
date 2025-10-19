@@ -4,8 +4,8 @@ import useGameLogic, {
   DEFAULT_GAME_CONFIG,
   DEFAULT_GAME_DATA,
 } from "./useGameLogic";
-import { StartGameScreen, EndGameScreen } from "../common/";
-import globalStyles from "../common/style-global.module.css";
+import { StartGameScreen, EndGameScreen } from "../../common";
+import globalStyles from "../../common/style-global.module.css";
 
 export default function WhackAMole({
   gameData = DEFAULT_GAME_DATA,

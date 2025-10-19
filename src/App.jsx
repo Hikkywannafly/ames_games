@@ -1,14 +1,18 @@
-import WhackAMole from "./whack-a-mole/WhackAMole";
+import WhackAMole from "./games/whack-a-mole/WhackAMole";
 import {
   DEFAULT_GAME_DATA,
   DEFAULT_GAME_CONFIG,
-} from "./whack-a-mole/useGameLogic";
+} from "./games/whack-a-mole/useGameLogic";
+
+import {
+  DEFAULT_GAME_DATA_MATCHING_4x3,
+  DEFAULT_GAME_CONFIG_MATCHING_4x3,
+} from "./games/MatchingGame4x3/data.js";
+
 import "./App.css";
 import { Route, Routes } from "react-router";
-import MatchingGame from "./MatchingGame2x5/MatchingGame.jsx";
-import MatchingGame4x3 from "./MatchingGame4x3/MatchingGame4x3.jsx";
-import { DEFAULT_GAME_CONFIG_MATCHING_4x3, DEFAULT_GAME_DATA_MATCHING_4x3 } from "./MatchingGame4x3/data.js";
-
+import MatchingGame from "./games/MatchingGame2x5/MatchingGame.jsx";
+import MatchingGame4x3 from "./games/MatchingGame4x3/MatchingGame4x3.jsx";
 function App() {
   const handleGameEnd = (gameReport) => {
     console.log("Game ended!", gameReport);
