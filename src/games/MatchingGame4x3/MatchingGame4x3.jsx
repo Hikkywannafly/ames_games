@@ -89,12 +89,6 @@ export default function MatchingGame4x3({ gameData, config }) {
                 defeatMessage: "Don't worry, try again! 💪",
               }}
               showStats={true}
-              buttonConfig={{
-                playAgainText: "Again",
-                backToHomeText: "Home",
-                showPlayAgain: true,
-                showBackToHome: true,
-              }}
             />
           )}
         </>
