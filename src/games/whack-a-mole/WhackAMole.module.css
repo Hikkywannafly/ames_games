@@ -331,10 +331,10 @@
   width: 100%;
 } */
 
-.endScreenTitle {
+/* .endScreenTitle {
   font-size: 3rem;
   margin-bottom: 1rem;
-}
+} */
 
 /* .endScreenContent {
   font-size: 1.25rem;
@@ -460,12 +460,12 @@
   font-weight: 500;
 } */
 
-.statValue {
+/* .statValue {
   font-size: 1.5rem;
   margin: 0;
   font-weight: bold;
   color: #ffd700;
-}
+} */
 
 /* @media (max-width: 1024px) {
   .startButton.modalStartButton {
