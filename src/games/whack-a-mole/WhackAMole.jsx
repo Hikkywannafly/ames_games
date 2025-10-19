@@ -66,7 +66,7 @@ export default function WhackAMole({
           // Try to find the mole element
           let moleElement = element.closest('[data-up="true"]');
           if (!moleElement) {
-            moleElement = element.closest('[data-id]');
+            moleElement = element.closest("[data-id]");
           }
 
           if (moleElement) {
@@ -76,8 +76,8 @@ export default function WhackAMole({
             const syntheticEvent = {
               target: moleElement,
               currentTarget: moleElement,
-              preventDefault: () => { },
-              stopPropagation: () => { },
+              preventDefault: () => {},
+              stopPropagation: () => {},
             };
             handleMoleHit(syntheticEvent, moleRefs, containerRef);
           }
@@ -113,7 +113,12 @@ export default function WhackAMole({
             role="button"
             tabIndex={isUp ? 0 : -1}
             aria-label="Empty hole"
-            onClick={(e) => {
+            // onClick={(e) => {
+            //   e.preventDefault();
+            //   e.stopPropagation();
+            //   handleMoleHit(e, moleRefs, containerRef);
+            // }}
+            onPointerDown={(e) => {
               e.preventDefault();
               e.stopPropagation();
               handleMoleHit(e, moleRefs, containerRef);
@@ -153,7 +158,12 @@ export default function WhackAMole({
           role="button"
           tabIndex={isUp ? 0 : -1}
           aria-label={`Answer: ${ans.text || ans.id}`}
-          onClick={(e) => {
+          // onClick={(e) => {
+          //   e.preventDefault();
+          //   e.stopPropagation();
+          //   handleMoleHit(e, moleRefs, containerRef);
+          // }}
+          onPointerDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
             handleMoleHit(e, moleRefs, containerRef);

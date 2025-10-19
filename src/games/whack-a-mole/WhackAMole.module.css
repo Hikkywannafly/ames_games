@@ -601,7 +601,6 @@
 } */
 
 @keyframes pulse {
-
   0%,
   100% {
     transform: scale(1);
@@ -613,7 +612,6 @@
 }
 
 @keyframes rocket {
-
   0%,
   100% {
     transform: translateX(0);
@@ -640,7 +638,7 @@
     1px -1px 2px rgba(255, 255, 255, 0.9), -1px 1px 2px rgba(255, 255, 255, 0.9);
 }
 
-.headerPane>div {
+.headerPane > div {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -667,7 +665,7 @@
     padding: 6px 8px;
   }
 
-  .headerPane>div {
+  .headerPane > div {
     padding: 5px 8px;
     gap: 3px;
     border-radius: 14px;
@@ -682,7 +680,7 @@
     padding: 10px 16px;
   }
 
-  .headerPane>div {
+  .headerPane > div {
     padding: 8px 14px;
     gap: 6px;
   }
@@ -696,7 +694,7 @@
     gap: 16px;
   }
 
-  .headerPane>div {
+  .headerPane > div {
     padding: 10px 20px;
     border-radius: 24px;
     gap: 8px;
@@ -889,6 +887,15 @@
     height: 58px;
     border-width: 4px;
   }
+}
+
+.mole {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 /* Mole */
