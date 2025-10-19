@@ -65,6 +65,14 @@
     padding: 0.25rem 1rem;
     margin-top: 0.5rem;
   }
+
+  .startButton {
+    padding: 0.75rem 1rem;
+  }
+
+  .buttonText {
+    font-size: 1.25rem;
+  }
 }
 
 @media (max-width: 400px) {
@@ -110,7 +118,6 @@
 }
 
 @keyframes pulse {
-
   0%,
   100% {
     transform: scale(1);

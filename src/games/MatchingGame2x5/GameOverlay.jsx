@@ -137,7 +137,7 @@ export default function GameOverlay({
         gameReport={gameReport}
         onPlayAgain={onStart}
         onBackToHome={onBackToHome}
-        modal={true}
+        modal={false}
       />
     );
   }
