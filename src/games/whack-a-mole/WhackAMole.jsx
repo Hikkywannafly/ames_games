@@ -53,15 +53,49 @@ export default function WhackAMole({
       const rect = container.getBoundingClientRect();
       setHammerPos({ x: `${x - rect.left}px`, y: `${y - rect.top}px` });
     };
+
+    const handleTouchEnd = (e) => {
+      // For iOS: trigger click on touch end
+      if (!isGameActive) return;
+
+      if (e.changedTouches && e.changedTouches[0]) {
+        const touch = e.changedTouches[0];
+        const element = document.elementFromPoint(touch.clientX, touch.clientY);
+
+        if (element) {
+          // Try to find the mole element
+          let moleElement = element.closest('[data-up="true"]');
+          if (!moleElement) {
+            moleElement = element.closest('[data-id]');
+          }
+
+          if (moleElement) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const syntheticEvent = {
+              target: moleElement,
+              currentTarget: moleElement,
+              preventDefault: () => { },
+              stopPropagation: () => { },
+            };
+            handleMoleHit(syntheticEvent, moleRefs, containerRef);
+          }
+        }
+      }
+    };
+
     window.addEventListener("mousemove", moveHammer, { passive: true });
     window.addEventListener("touchmove", moveHammer, { passive: true });
     window.addEventListener("touchstart", moveHammer, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd);
     return () => {
       window.removeEventListener("mousemove", moveHammer);
       window.removeEventListener("touchmove", moveHammer);
       window.removeEventListener("touchstart", moveHammer);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [setHammerPos]);
+  }, [setHammerPos, handleMoleHit, isGameActive]);
 
   const MoleCell = memo(({ mole, index }) => {
     const ans = mole?.content;
