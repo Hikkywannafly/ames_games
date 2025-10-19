@@ -44,7 +44,7 @@ export default function useGameLogic(gameData, config) {
 
     const correctUrl = loadSound("../../common/sounds/matching2x5/correct");
     const wrongUrl = loadSound("../../common/sounds/whalemole/error");
-    const matchUrl = loadSound("../../common/sounds/whalemole/match");
+    const matchUrl = loadSound("../../common/sounds/matching4x3/match");
     const finalUrl = loadSound("../../common/sounds/matching2x5/final");
 
     if (correctUrl) correctSoundRef.current = new Audio(correctUrl);
