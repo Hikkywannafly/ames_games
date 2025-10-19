@@ -134,7 +134,8 @@
 
 .modalTitle,
 .modalContent,
-.modalContentTextVictory {
+.modalContentTextVictory,
+.modalContentTextDefeat {
   margin: 0rem 0rem 0.875rem 0rem;
 }
 
@@ -257,12 +258,14 @@
 
   .modalTitle,
   .modalContent,
-  .modalContentTextVictory {
+  .modalContentTextVictory,
+  .modalContentTextDefeat {
     margin: 0rem 0rem 0.25rem 0rem;
   }
 
   .modalContentFinalScoreText {
     font-size: 1rem;
+    margin-bottom: 0.5rem;
   }
 
   .modalStatsGrid .statValue,
@@ -271,6 +274,10 @@
     margin: 0;
     font-weight: bold;
     color: #ffd700;
+  }
+
+  .modalStatsGrid .statItem {
+    padding: 0.5rem;
   }
 
   .statsGrid {
