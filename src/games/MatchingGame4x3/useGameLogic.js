@@ -1,8 +1,18 @@
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect } from "react";
+import useSound from "use-sound";
 
 function shuffle(array) {
   return [...array].sort(() => Math.random() - 0.5);
 }
+
+const loadSound = (basePath, exts = [".wav", ".mp3", ".ogg"]) => {
+  for (let ext of exts) {
+    try {
+      return new URL(`${basePath}${ext}`, import.meta.url).href;
+    } catch {}
+  }
+  return "";
+};
 
 export default function useGameLogic(gameData, config) {
   const [isStarted, setIsStarted] = useState(false);
@@ -16,53 +26,27 @@ export default function useGameLogic(gameData, config) {
   const [correctPair, setCorrectPair] = useState([]);
   const [queue, setQueue] = useState([]);
 
-  const timerRef = useRef(null);
+  let timerRef = null;
 
-  // Audio refs
-  const correctSoundRef = useRef(null);
-  const wrongSoundRef = useRef(null);
-  const matchSoundRef = useRef(null);
-  const finalSoundRef = useRef(null);
+  // Load sound URLs
+  const selectUrl = loadSound("../../common/sounds/matching2x5/select");
+  const correctUrl = loadSound("../../common/sounds/whalemole/correct");
+  const matchUrl = loadSound("../../common/sounds/matching4x3/match");
+  const finalUrl = loadSound("../../common/sounds/matching2x5/final");
+  const errorUrl = loadSound("../../common/sounds/whalemole/error");
 
-  const loadSound = (basePath, exts = [".wav", ".mp3", ".ogg"]) => {
-    for (let ext of exts) {
-      try {
-        return new URL(`${basePath}${ext}`, import.meta.url).href;
-      } catch {}
-    }
-    return "";
-  };
-
-  const initSounds = useCallback(() => {
-    if (
-      correctSoundRef.current &&
-      wrongSoundRef.current &&
-      matchSoundRef.current &&
-      finalSoundRef.current
-    )
-      return;
-
-    const correctUrl = loadSound("../../common/sounds/matching2x5/correct");
-    const wrongUrl = loadSound("../../common/sounds/whalemole/error");
-    const matchUrl = loadSound("../../common/sounds/matching4x3/match");
-    const finalUrl = loadSound("../../common/sounds/matching2x5/final");
-
-    if (correctUrl) correctSoundRef.current = new Audio(correctUrl);
-    if (wrongUrl) wrongSoundRef.current = new Audio(wrongUrl);
-    if (matchUrl) matchSoundRef.current = new Audio(matchUrl);
-    if (finalUrl) finalSoundRef.current = new Audio(finalUrl);
-
-    if (correctSoundRef.current) correctSoundRef.current.volume = 0.5;
-    if (wrongSoundRef.current) wrongSoundRef.current.volume = 0.5;
-    if (matchSoundRef.current) matchSoundRef.current.volume = 0.6;
-    if (finalSoundRef.current) finalSoundRef.current.volume = 0.6;
-  }, []);
+  // useSound hooks
+  const [playSelect] = useSound(selectUrl, { volume: 0.5 });
+  const [playCorrect] = useSound(correctUrl, { volume: 0.5 });
+  const [playMatch] = useSound(matchUrl, { volume: 0.6 });
+  const [playFinal] = useSound(finalUrl, { volume: 0.6 });
+  const [playWrong] = useSound(errorUrl, { volume: 0.5 });
 
   const endGame = useCallback(() => {
     setIsEnded(true);
-    if (timerRef.current) clearInterval(timerRef.current);
-    finalSoundRef.current?.play();
-  }, []);
+    if (timerRef) clearInterval(timerRef);
+    playFinal();
+  }, [playFinal]);
 
   const homeBack = useCallback(() => {
     setIsStarted(false);
@@ -78,8 +62,6 @@ export default function useGameLogic(gameData, config) {
   }, [config.totalTime]);
 
   const startGame = useCallback(() => {
-    initSounds();
-
     const shuffled = shuffle(gameData);
     const first6 = shuffled.slice(0, 6);
     const rest = shuffled.slice(6);
@@ -102,8 +84,8 @@ export default function useGameLogic(gameData, config) {
     setIsStarted(true);
     setIsEnded(false);
 
-    if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
+    if (timerRef) clearInterval(timerRef);
+    timerRef = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           endGame();
@@ -112,27 +94,22 @@ export default function useGameLogic(gameData, config) {
         return prev - 1;
       });
     }, 1000);
-  }, [gameData, config.totalTime, endGame, initSounds]);
+  }, [gameData, config.totalTime, endGame]);
 
   const handleSelect = useCallback(
     (index) => {
-      if (!isStarted) return;
-      if (selected.includes(index)) return;
+      if (!isStarted || selected.includes(index)) return;
 
       const newSelected = [...selected, index];
       setSelected(newSelected);
-
-      correctSoundRef.current?.play();
+      playSelect();
 
       if (newSelected.length === 2) {
         setMoves((prev) => prev + 1);
         const [a, b] = newSelected;
 
-        if (
-          board[a].pair === board[b].pair &&
-          board[a].type !== board[b].type
-        ) {
-          matchSoundRef.current?.play();
+        if (board[a].pair === board[b].pair && board[a].type !== board[b].type) {
+          playMatch();
           setCorrectPair([a, b]);
 
           setTimeout(() => {
@@ -155,8 +132,10 @@ export default function useGameLogic(gameData, config) {
 
             if (newBoard.length === 0) endGame();
           }, 600);
+
+          playCorrect();
         } else {
-          wrongSoundRef.current?.play();
+          playWrong();
           setWrongPair(newSelected);
           setTimeout(() => {
             setWrongPair([]);
@@ -165,12 +144,12 @@ export default function useGameLogic(gameData, config) {
         }
       }
     },
-    [board, isStarted, queue, selected, endGame]
+    [board, isStarted, queue, selected, endGame, playCorrect, playMatch, playSelect, playWrong]
   );
 
   useEffect(() => {
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef) clearInterval(timerRef);
     };
   }, []);
 
